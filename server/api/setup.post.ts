@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
 
   // 插入默认「关于」页面（用户可在后台自行修改）
   await db.prepare(
-    `INSERT OR IGNORE INTO pages (title, slug, content) VALUES (?, ?, ?)`
+    `INSERT OR IGNORE INTO pages (title, slug, content, show_in_nav) VALUES (?, ?, ?, 1)`
   ).bind(
     '关于本站',
     'about',

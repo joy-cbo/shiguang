@@ -16,14 +16,24 @@ const links = [
   { to: '/', label: '首页' },
   { to: '/archive', label: '归档' },
   { to: '/links', label: '友链' },
-  { to: '/page/about', label: '关于' },
 ]
+
+const navPages = ref<{ title: string; slug: string }[]>([])
+
+onMounted(async () => {
+  try {
+    const data = await $fetch<{ pages: { title: string; slug: string }[] }>('/api/pages/nav')
+    navPages.value = data.pages || []
+  } catch (_) {}
+})
 </script>
 
 <template>
   <template v-if="mode === 'desktop'">
     <NuxtLink v-for="l in links" :key="l.to" :to="l.to"
       class="hover:text-purple-600 transition-colors">{{ l.label }}</NuxtLink>
+    <NuxtLink v-for="p in navPages" :key="p.slug" :to="'/page/' + p.slug"
+      class="hover:text-purple-600 transition-colors">{{ p.title }}</NuxtLink>
     <NuxtLink v-if="isLoggedIn" to="/admin" class="hover:text-purple-600 transition-colors">后台管理</NuxtLink>
     <NuxtLink v-if="!isLoggedIn" to="/admin/login" class="hover:text-purple-600 transition-colors">登录</NuxtLink>
   </template>
@@ -31,11 +41,14 @@ const links = [
   <template v-else-if="mode === 'mobile'">
     <NuxtLink v-for="l in links" :key="l.to" :to="l.to" @click="handleClick"
       class="block py-1.5 hover:text-purple-600">{{ l.label }}</NuxtLink>
+    <NuxtLink v-for="p in navPages" :key="p.slug" :to="'/page/' + p.slug" @click="handleClick"
+      class="block py-1.5 hover:text-purple-600">{{ p.title }}</NuxtLink>
     <NuxtLink v-if="isLoggedIn" to="/admin" @click="handleClick" class="block py-1.5 hover:text-purple-600">后台管理</NuxtLink>
     <NuxtLink v-if="!isLoggedIn" to="/admin/login" @click="handleClick" class="block py-1.5 hover:text-purple-600">登录</NuxtLink>
   </template>
 
   <template v-else-if="mode === 'footer'">
     <NuxtLink v-for="l in links" :key="l.to" :to="l.to" class="hover:text-purple-500">{{ l.label }}</NuxtLink>
+    <NuxtLink v-for="p in navPages" :key="p.slug" :to="'/page/' + p.slug" class="hover:text-purple-500">{{ p.title }}</NuxtLink>
   </template>
 </template>

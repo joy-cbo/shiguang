@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS pages (
   title TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
   content TEXT NOT NULL DEFAULT '',
+  show_in_nav INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );

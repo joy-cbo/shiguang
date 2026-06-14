@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   await requireAuth(event)
   const ip = event.headers.get('x-forwarded-for') || ''
   if (ip) checkRateLimit(`page-create:${ip}`, 10, 60)
-  const { title, slug, content } = await readBody(event) as { title?: string; slug?: string; content?: string }
+  const { title, slug, content, show_in_nav } = await readBody(event) as { title?: string; slug?: string; content?: string; show_in_nav?: number }
   if (!title) throw createError({ statusCode: 400, message: '标题不能为空' })
 
   const db = getDB(event)
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   const existing = await db.prepare('SELECT id FROM pages WHERE slug = ?').bind(finalSlug).first()
   if (existing) throw createError({ statusCode: 409, message: '该别名已存在' })
 
-  await db.prepare('INSERT INTO pages (title, slug, content) VALUES (?, ?, ?)')
-    .bind(sanitize(title), finalSlug, sanitize(content || '')).run()
+  await db.prepare('INSERT INTO pages (title, slug, content, show_in_nav) VALUES (?, ?, ?, ?)')
+    .bind(sanitize(title), finalSlug, sanitize(content || ''), show_in_nav ? 1 : 0).run()
   return { success: true }
 })

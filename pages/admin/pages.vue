@@ -25,6 +25,10 @@
           <textarea v-model="createContent" rows="8" placeholder="支持 HTML 标签..."
             class="w-full border rounded px-3 py-1.5 text-sm dark:bg-gray-700 dark:border-gray-600 font-mono"></textarea>
         </div>
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" v-model="createShowInNav" class="rounded" />
+          显示在前端导航栏
+        </label>
         <button @click="create"
           class="bg-green-600 text-white px-4 py-1.5 rounded text-sm hover:bg-green-700">创建</button>
       </div>
@@ -47,6 +51,10 @@
             </div>
             <textarea v-model="editContent" rows="8"
               class="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600 font-mono"></textarea>
+            <label class="flex items-center gap-2 text-sm cursor-pointer">
+              <input type="checkbox" v-model="editShowInNav" class="rounded" />
+              显示在前端导航栏
+            </label>
           </div>
         </template>
         <template v-else>
@@ -54,6 +62,7 @@
             <div>
               <span class="text-sm font-medium">{{ p.title }}</span>
               <span class="text-gray-400 text-xs ml-2">/page/{{ p.slug }}</span>
+              <span v-if="p.show_in_nav" class="text-green-500 text-xs ml-2">● 导航</span>
             </div>
             <div class="flex gap-2">
               <NuxtLink :to="'/page/' + p.slug" target="_blank"
@@ -87,12 +96,14 @@ const showCreate = ref(false)
 const createTitle = ref('')
 const createSlug = ref('')
 const createContent = ref('')
+const createShowInNav = ref(false)
 
 // 编辑
 const editingId = ref<number | null>(null)
 const editTitle = ref('')
 const editSlug = ref('')
 const editContent = ref('')
+const editShowInNav = ref(false)
 
 async function load() {
   const data = await fetch<{ pages: Page[] }>('/api/pages')
@@ -103,11 +114,12 @@ async function create() {
   if (!createTitle.value || !createSlug.value) return
   await fetch('/api/pages', {
     method: 'POST',
-    body: { title: createTitle.value, slug: createSlug.value, content: createContent.value }
+    body: { title: createTitle.value, slug: createSlug.value, content: createContent.value, show_in_nav: createShowInNav.value ? 1 : 0 }
   })
   createTitle.value = ''
   createSlug.value = ''
   createContent.value = ''
+  createShowInNav.value = false
   showCreate.value = false
   await load()
 }
@@ -117,6 +129,7 @@ function startEdit(p: Page) {
   editTitle.value = p.title
   editSlug.value = p.slug
   editContent.value = p.content
+  editShowInNav.value = p.show_in_nav === 1
 }
 
 function cancelEdit() {
@@ -127,7 +140,7 @@ async function saveEdit(id: number) {
   if (!editTitle.value || !editSlug.value) return
   await fetch(`/api/pages/${id}`, {
     method: 'PUT',
-    body: { title: editTitle.value, slug: editSlug.value, content: editContent.value }
+    body: { title: editTitle.value, slug: editSlug.value, content: editContent.value, show_in_nav: editShowInNav.value ? 1 : 0 }
   })
   cancelEdit()
   await load()

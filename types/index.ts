@@ -64,6 +64,7 @@ export interface Page {
   title: string
   slug: string
   content: string
+  show_in_nav: number
   created_at: string
   updated_at: string
 }
