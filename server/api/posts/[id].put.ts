@@ -21,8 +21,13 @@ export default defineEventHandler(async (event) => {
   }
 
   if (body.title === '') throw createError({ statusCode: 400, message: '标题不能为空' })
-  if (body.slug !== undefined && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(body.slug as string)) {
+  if (body.slug !== undefined && body.slug !== '' && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(body.slug as string)) {
     throw createError({ statusCode: 400, message: 'slug 格式无效：只能包含小写字母、数字和连字符' })
+  }
+  // 补丁：slug 为空时从标题自动生成
+  if (body.slug === '' && body.title) {
+    body.slug = body.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 100)
+    if (!body.slug) body.slug = `post-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
   }
 
   const db = getDB(event)
