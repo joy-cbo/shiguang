@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS site_config (
 `
 
 export default defineEventHandler(async (event) => {
+  try {
   const ip = event.headers.get('x-forwarded-for') || ''
   if (ip) checkRateLimit(`setup:${ip}`, 3, 3600)
 
@@ -121,4 +122,11 @@ export default defineEventHandler(async (event) => {
   ).bind(username, passwordHash, nickname || username, 'admin').run()
 
   return { success: true, message: '初始化成功，请登录' }
+  } catch (e: any) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: e.message || String(e),
+      message: '初始化失败: ' + (e.message || String(e))
+    })
+  }
 })
