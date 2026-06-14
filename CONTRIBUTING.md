@@ -21,30 +21,31 @@ npm run dev
 
 ```
 shiguang/
-├── plugins/           # 插件系统（自包含，自动发现）
-│   ├── registry.ts    #   自动扫描 plugin.json，不需手改
-│   ├── friend-links/  #   友链插件（含 api/ + pages/）
-│   └── rss-feed/      #   RSS 插件（含 api/）
-├── themes/            # 主题系统（自包含，自动发现）
-│   ├── saas/          #   紫橙主题（theme.json + layout.vue）
-│   └── default/       #   极简主题（theme.json + layout.vue）
-├── server/api/        # API 路由（重导出指向 plugin/ 源码）
-├── pages/             # 页面（前台 + 后台）
-├── composables/       # 共享 composables
-├── components/        # 共享组件
-└── types/             # TypeScript 类型定义
+├── app/                 ← 前端源码
+│   ├── pages/           ← 前台 + 后台页面
+│   ├── plugins/         ← 插件系统（自包含，自动发现）
+│   │   ├── registry.ts  #   自动扫描 plugin.json，不需手改
+│   │   ├── friend-links/#   友链插件
+│   │   └── rss-feed/    #   RSS 插件
+│   └── themes/          ← 主题系统（自包含，自动发现）
+│       ├── saas/        #   紫橙主题
+│       └── default/     #   极简主题
+├── engine/              ← 后端引擎
+│   └── api/             # API 路由（桥接→插件源码）
+├── public/              # 静态文件
+└── docs/                # 文档
 ```
 
 ## 🧩 开发插件
 
-插件系统通过 `import.meta.glob` 自动扫描 `plugins/*/plugin.json`，**不需要手动注册**。
+插件系统通过 `import.meta.glob` 自动扫描 `app/plugins/*/plugin.json`，**不需要手动注册**。
 
 ```bash
 # 1. 建文件夹
-mkdir plugins/my-plugin
+mkdir app/plugins/my-plugin
 
 # 2. 写元数据
-cat > plugins/my-plugin/plugin.json << 'EOF'
+cat > app/plugins/my-plugin/plugin.json << 'EOF'
 {
   "name": "my-plugin",
   "version": "1.0.0",
@@ -53,20 +54,20 @@ cat > plugins/my-plugin/plugin.json << 'EOF'
 }
 EOF
 
-# 3. 写 API（在 plugins/my-plugin/api/ 下）
-# 4. 写页面（在 plugins/my-plugin/pages/ 下，可选）
-# 5. 在 server/api/ 和 pages/ 创建重导出文件
+# 3. 写 API（在 app/plugins/my-plugin/api/ 下）
+# 4. 写页面（在 app/plugins/my-plugin/pages/ 下，可选）
+# 5. 在 engine/api/ 和 app/pages/ 创建重导出文件
 ```
 
-**不需要改 `plugins/registry.ts`**。
+**不需要改 `app/plugins/registry.ts`**。
 
 ## 🎨 开发主题
 
-主题系统通过 `import.meta.glob` 自动扫描 `themes/*/theme.json`。
+主题系统通过 `import.meta.glob` 自动扫描 `app/themes/*/theme.json`。
 
 ```bash
 # 1. 复制模板
-cp -r themes/default themes/my-theme
+cp -r app/themes/default app/themes/my-theme
 
 # 2. 改 theme.json
 #    id: "my-theme"
@@ -77,7 +78,7 @@ cp -r themes/default themes/my-theme
 # 3. 改 layout.vue（导航栏、配色、布局）
 ```
 
-**不需要改 `pages/admin/themes.vue`**。
+**不需要改 `app/pages/admin/themes.vue`**。
 
 ## 代码规范
 

@@ -15,77 +15,97 @@
 一次部署 = 前后端一起上线
 ```
 
-不走传统的前后端分离部署。Nuxt 3 的 server/ 目录直接作为 Cloudflare Pages Functions 运行，数据库用 D1（Cloudflare 的 SQLite 边缘数据库），文件存储用 R2（兼容 S3 的对象存储）。
+不走传统的前后端分离部署。Nuxt 3 的 engine/ 目录直接作为 Cloudflare Pages Functions 运行，数据库用 D1（Cloudflare 的 SQLite 边缘数据库），文件存储用 R2（兼容 S3 的对象存储）。
 
 ### 1.2 数据流
 
 ```
 浏览器 → Cloudflare Pages Worker → D1 数据库 / R2 存储
                 ↑
-          server/api/ 下所有 .ts 文件自动成为 API 端点
-          server/utils/ 提供 auth/jwt/crypto/sanitize 等工具
+          engine/api/ 下所有 .ts 文件自动成为 API 端点
+          engine/utils/ 提供 auth/jwt/crypto/sanitize 等工具
 ```
 
 ### 1.3 目录结构
 
 ```
 shiguang/
-├── components/          # Vue 组件（前台 + 后台共用）
-│   ├── CommentSection.vue   # 评论区（嵌套回复）
-│   ├── NavLinks.vue         # 导航链接（desktop/mobile/footer 三模式）
-│   ├── SearchBox.vue        # 实时搜索框
-│   ├── SiteFooter.vue       # 统一页脚
-│   ├── TableOfContents.vue  # 文章目录跟踪
-│   ├── Breadcrumb.vue       # 面包屑导航
-│   ├── RelatedPosts.vue     # 相关文章推荐
-│   └── TipTapEditor.vue     # 富文本编辑器
-├── composables/         # 共享状态和工具
-│   ├── useApi.ts            # 统一 fetch（自动注入 token + 错误处理）
-│   ├── useSite.ts           # 站点配置共享状态
-│   ├── useFormat.ts         # 日期格式化 / 阅读时长 / HTML 清理
-│   ├── useAutoSave.ts       # 草稿自动保存
-│   ├── usePostNav.ts        # 上一篇/下一篇
-│   ├── useTagCloud.ts       # 标签云
-│   └── useTheme.ts          # 主题状态管理
-├── layouts/             # 布局
-│   ├── default.vue          # 默认布局（含暗黑模式 toggle + 主题切换）
-│   ├── saas.vue             # SaaS 紫橙主题布局（毛玻璃导航 + 浅灰白背景）
-│   └── admin.vue            # 后台管理布局（侧边栏 + 顶栏）
-├── pages/               # 所有页面
-│   ├── index.vue            # 首页（英雄卡片 + 卡片网格）
-│   ├── posts/[slug].vue     # 文章详情页
-│   ├── archive.vue          # 归档页（年/月分组时间线）
-│   ├── search.vue           # 搜索结果页
-│   ├── links.vue            # 友链展示页
-│   ├── about.vue            # 关于页
-│   ├── categories/[name].vue# 分类页
-│   ├── tags/[name].vue      # 标签页
-│   └── admin/               # 后台管理页面
-├── server/
-│   ├── api/                 # API 端点（自动路由）
-│   ├── utils/               # 工具函数
-│   │   ├── auth.ts              # requireAuth() 统一认证入口
-│   │   ├── jwt.ts               # JWT 签发与验证
-│   │   ├── crypto.ts            # 密码哈希
-│   │   ├── db.ts                # getDB() 数据库实例获取
-│   │   ├── db-helpers.ts        # rows<T>() / first<T>() 类型安全包装
-│   │   ├── rate-limit.ts        # 令牌桶速率限制
-│   │   ├── sanitize.ts          # 输入消毒（XSS 防护）
-│   │   └── plugin-registry.ts   # 插件系统注册表
-│   ├── middleware/          # 路由中间件
-│   │   ├── auth.global.ts      # 全局认证守卫
-│   │   └── init.global.ts      # 暗黑模式初始化
-│   └── plugins/
-│       └── error-handler.ts    # 全局错误捕获 → 中文消息
-├── plugins/              # 可拔插插件（自包含，自动发现）
-│   ├── registry.ts           # 自动扫描 plugin.json 注册，不需手改
-│   ├── friend-links/         # 友链插件（含 api/ + pages/）
-│   └── rss-feed/             # RSS 插件（含 api/）
-├── themes/               # 可切换主题（自包含，自动发现）
-│   ├── saas/                 # 紫橙主题（theme.json + layout.vue）
-│   └── default/              # 极简主题（theme.json + layout.vue）
-├── types/index.ts        # 全局 TypeScript 类型定义
-└── assets/css/main.css   # 全局样式（含 gradient-text / gradient-bg）
+├── app/                     ← 前端源码（Nuxt srcDir）
+│   ├── app.vue              # 入口
+│   ├── components/          # Vue 组件
+│   │   ├── CommentSection.vue   # 评论区（嵌套回复）
+│   │   ├── NavLinks.vue         # 导航链接（desktop/mobile/footer）
+│   │   ├── SearchBox.vue        # 实时搜索框
+│   │   ├── SiteFooter.vue       # 统一页脚
+│   │   ├── TableOfContents.vue  # 文章目录跟踪
+│   │   ├── Breadcrumb.vue       # 面包屑导航
+│   │   ├── RelatedPosts.vue     # 相关文章推荐
+│   │   ├── IconShiguang.vue     # SVG 图标组件（30+ 图标）
+│   │   └── TipTapEditor.vue     # 富文本编辑器
+│   ├── lib/                 # 工具函数
+│   │   ├── useApi.ts            # 统一 fetch（注入 token + 错误处理）
+│   │   ├── useSite.ts           # 站点配置共享状态
+│   │   ├── useFormat.ts         # 日期格式化 / 阅读时长
+│   │   ├── useAutoSave.ts       # 草稿自动保存
+│   │   ├── usePostNav.ts        # 上一篇/下一篇
+│   │   ├── useTagCloud.ts       # 标签云
+│   │   └── useTheme.ts          # 主题状态
+│   ├── layouts/             # 页面布局
+│   │   ├── default.vue          # 默认布局（暗黑模式 + 主题切换）
+│   │   ├── saas.vue             # 紫橙主题布局
+│   │   └── admin.vue            # 后台管理布局（侧边栏）
+│   ├── pages/               # 页面（Nuxt 文件路由）
+│   │   ├── index.vue            # 首页（英雄卡片 + 卡片网格）
+│   │   ├── posts/[slug].vue     # 文章详情
+│   │   ├── archive.vue          # 归档
+│   │   ├── search.vue           # 搜索
+│   │   ├── links.vue            # 友链展示
+│   │   ├── page/[slug].vue      # 独立页面
+│   │   ├── categories/[name].vue
+│   │   ├── tags/[name].vue
+│   │   └── admin/               # 后台管理（17 个页面）
+│   ├── plugins/              # 博客插件（自包含，自动发现）
+│   │   ├── registry.ts          # 扫描 plugin.json 注册
+│   │   ├── friend-links/        # 友链插件（含 api/ + pages/）
+│   │   └── rss-feed/            # RSS 插件（含 api/）
+│   ├── themes/               # 主题（自包含，自动发现）
+│   │   ├── saas/                # 紫橙主题
+│   │   └── default/             # 极简主题
+│   ├── types/index.ts        # TypeScript 类型定义
+│   └── assets/css/main.css   # 全局样式
+├── engine/                   ← 后端引擎（Nuxt serverDir）
+│   ├── api/                  # API 端点（自动路由）
+│   │   ├── auth/             # 登录/个人资料/改密码
+│   │   ├── posts/            # 文章 CRUD + 评论
+│   │   ├── pages/            # 独立页面
+│   │   ├── categories/       # 分类
+│   │   ├── tags/             # 标签
+│   │   ├── links/            # 友链（重导出→插件）
+│   │   ├── comments/         # 评论管理
+│   │   ├── plugins/          # 插件启用/禁用
+│   │   ├── users/            # 用户管理
+│   │   ├── setup.post.ts     # 首次初始化（自动建表）
+│   │   ├── upload.post.ts    # 文件上传
+│   │   ├── search.get.ts     # 搜索
+│   │   ├── home.get.ts       # 首页聚合
+│   │   ├── settings.ts       # 站点设置
+│   │   ├── sitemap.xml.ts    # Sitemap
+│   │   └── rss.xml.ts        # RSS（重导出→插件）
+│   ├── utils/                # 引擎工具
+│   │   ├── auth.ts           # requireAuth
+│   │   ├── crypto.ts         # 密码哈希
+│   │   ├── jwt.ts            # JWT
+│   │   ├── db.ts             # D1 连接
+│   │   ├── db-helpers.ts     # rows<T>() / first<T>()
+│   │   ├── rate-limit.ts     # 令牌桶
+│   │   ├── sanitize.ts       # HTML 消毒
+│   │   └── plugin-registry.ts# 插件注册表
+│   └── schema.sql            # 数据库建表
+├── public/                   # 静态文件
+├── docs/                     # 文档
+├── nuxt.config.ts
+├── tailwind.config.ts
+└── package.json
 ```
 
 ---
@@ -310,7 +330,7 @@ layouts/default.vue → 主题切换器（判断 activeTheme）
   └─ 其他    → themes/default/layout.vue（白底 + 暗黑模式切换）
 ```
 
-主题支持自动发现：`pages/admin/themes.vue` 通过 `import.meta.glob` 扫描 `themes/*/theme.json`。新主题只需建文件夹 + 写 `theme.json` + `layout.vue`，后台自动出现，不需改任何共享文件。
+主题支持自动发现：`app/pages/admin/themes.vue` 通过 `import.meta.glob` 扫描 `app/themes/*/theme.json`。新主题只需建文件夹 + 写 `theme.json` + `layout.vue`，后台自动出现，不需改任何共享文件。
 
 ---
 
@@ -334,7 +354,7 @@ plugins/
 
 ### 6.2 开发新插件
 
-新插件只需建 `plugins/xxx/plugin.json`，系统自动发现。不需要改 `registry.ts` 或任何共享文件。拉上游更新零合并冲突。
+新插件只需建 `app/plugins/xxx/plugin.json`，系统自动发现。不需要改 `registry.ts` 或任何共享文件。拉上游更新零合并冲突。
 
 ### 6.2 内置插件
 

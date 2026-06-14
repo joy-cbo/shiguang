@@ -26,103 +26,90 @@ npm run dev
 
 ```
 shiguang/
-├── components/            # 共享 Vue 组件
-│   ├── CommentSection.vue
-│   ├── NavLinks.vue       # 导航链接（desktop/mobile/footer）
-│   ├── SearchBox.vue      # 实时搜索框
-│   ├── SiteFooter.vue     # 统一页脚
-│   ├── TableOfContents.vue
-│   ├── Breadcrumb.vue
-│   ├── RelatedPosts.vue
-│   └── IconShiguang.vue   # SVG 图标组件（30+ 图标）
-│
-├── composables/           # Vue 组合式函数
-│   ├── useApi.ts          # 统一 fetch（自动注入 token）
-│   ├── useSite.ts         # 站点配置共享状态
-│   ├── useFormat.ts       # 日期格式化 / 阅读时长
-│   ├── useAutoSave.ts     # 草稿自动保存
-│   ├── usePostNav.ts      # 上一篇/下一篇
-│   ├── useTagCloud.ts     # 标签云
-│   └── useTheme.ts        # 主题状态
-│
-├── pages/                 # 页面（Nuxt 文件路由）
-│   ├── index.vue          # 首页
-│   ├── posts/[slug].vue   # 文章详情
-│   ├── archive.vue        # 归档
-│   ├── links.vue          # 友链页（重导出→插件）
-│   ├── page/[slug].vue    # 独立页面
-│   ├── search.vue         # 搜索结果
-│   ├── [...404].vue       # 404 页
-│   └── admin/             # 后台管理
-│       ├── login.vue
-│       ├── setup.vue
-│       ├── index.vue      # 仪表盘
-│       ├── posts/         # 文章
-│       ├── categories.vue # 分类
-│       ├── tags.vue       # 标签
-│       ├── pages.vue      # 独立页面
-│       ├── plugins.vue    # 插件管理
-│       ├── themes.vue     # 主题管理（自动发现）
-│       ├── comments.vue   # 评论
-│       ├── links.vue      # 友链管理
-│       ├── users.vue      # 用户
-│       ├── media.vue      # 媒体库
-│       ├── trash.vue      # 回收站
-│       └── settings.vue   # 站点设置
-│
-├── server/
-│   ├── api/               # API 端点（Nuxt 自动路由）
-│   │   ├── auth/          # 登录/个人资料/改密码
-│   │   ├── posts/         # 文章 CRUD
-│   │   ├── pages/         # 独立页面
-│   │   ├── categories/    # 分类
-│   │   ├── tags/          # 标签
-│   │   ├── links/         # 友链（重导出→插件）
-│   │   ├── comments/      # 评论
-│   │   ├── plugins/       # 插件管理 API
-│   │   ├── users/         # 用户管理
-│   │   ├── setup.post.ts  # 首次初始化（自动建表）
-│   │   ├── upload.post.ts # 文件上传
-│   │   ├── search.get.ts  # 搜索
-│   │   ├── home.get.ts    # 首页聚合 API
+├── app/                     ← 前端源码（Nuxt srcDir）
+│   ├── app.vue              # 入口
+│   ├── components/          # 共享 Vue 组件
+│   │   ├── CommentSection.vue
+│   │   ├── NavLinks.vue     # 导航链接
+│   │   ├── SearchBox.vue    # 实时搜索框
+│   │   ├── SiteFooter.vue   # 统一页脚
+│   │   ├── TableOfContents.vue
+│   │   ├── Breadcrumb.vue
+│   │   ├── RelatedPosts.vue
+│   │   └── IconShiguang.vue # SVG 图标（30+）
+│   ├── lib/                 # 工具函数
+│   │   ├── useApi.ts        # 统一 fetch（自动注入 token）
+│   │   ├── useSite.ts       # 站点配置
+│   │   ├── useFormat.ts     # 日期/时长格式化
+│   │   ├── useAutoSave.ts   # 草稿自动保存
+│   │   ├── usePostNav.ts    # 上一篇/下一篇
+│   │   ├── useTagCloud.ts   # 标签云
+│   │   └── useTheme.ts      # 主题状态
+│   ├── layouts/             # 页面布局
+│   │   ├── default.vue      # 默认（主题切换器）
+│   │   ├── saas.vue         # → themes/saas/layout.vue
+│   │   └── admin.vue        # 后台布局（侧边栏）
+│   ├── pages/               # 页面（Nuxt 文件路由）
+│   │   ├── index.vue        # 首页
+│   │   ├── posts/[slug].vue # 文章详情
+│   │   ├── archive.vue      # 归档
+│   │   ├── links.vue        # 友链页（重导出→插件）
+│   │   ├── page/[slug].vue  # 独立页面
+│   │   ├── search.vue       # 搜索结果
+│   │   ├── [...404].vue     # 404
+│   │   └── admin/           # 后台管理（17 个页面）
+│   ├── plugins/             # 博客插件（自包含，自动发现）
+│   │   ├── registry.ts      # 扫描 plugin.json 注册
+│   │   ├── friend-links/    # 友链插件
+│   │   │   ├── plugin.json
+│   │   │   ├── api/         # API 源码
+│   │   │   └── pages/       # 页面源码
+│   │   └── rss-feed/        # RSS 插件
+│   │       ├── plugin.json
+│   │       └── api/
+│   ├── themes/              # 主题（自包含，自动发现）
+│   │   ├── saas/            # 紫橙主题
+│   │   │   ├── theme.json
+│   │   │   └── layout.vue
+│   │   └── default/         # 极简主题
+│   │       ├── theme.json
+│   │       └── layout.vue
+│   ├── types/index.ts       # TypeScript 类型
+│   ├── middleware/          # 路由守卫
+│   └── assets/css/main.css  # 全局样式
+├── engine/                  ← 后端引擎（Nuxt serverDir）
+│   ├── api/                 # API 端点
+│   │   ├── auth/            # 登录/资料/改密码
+│   │   ├── posts/           # 文章 CRUD + 评论
+│   │   ├── pages/           # 独立页面
+│   │   ├── categories/      # 分类
+│   │   ├── tags/            # 标签
+│   │   ├── links/           # 友链（重导出→插件）
+│   │   ├── comments/        # 评论管理
+│   │   ├── plugins/         # 插件启用/禁用
+│   │   ├── users/           # 用户管理
+│   │   ├── setup.post.ts    # 首次初始化（自动建表）
+│   │   ├── upload.post.ts   # 文件上传
+│   │   ├── search.get.ts    # 搜索
+│   │   ├── home.get.ts      # 首页聚合
 │   │   ├── settings.get.ts / put.ts
 │   │   ├── sitemap.xml.ts
-│   │   └── rss.xml.ts     # RSS（重导出→插件）
-│   └── utils/             # 工具
-│       ├── auth.ts        # requireAuth
-│       ├── crypto.ts      # 密码哈希
-│       ├── jwt.ts         # JWT
-│       ├── db.ts          # D1 连接
-│       ├── db-helpers.ts  # rows<T>() / first<T>()
-│       ├── rate-limit.ts  # 令牌桶
-│       └── sanitize.ts    # HTML 消毒
-│
-├── plugins/               # 插件（自包含，自动发现）
-│   ├── registry.ts        # 扫描 plugin.json 自动注册
-│   ├── friend-links/      # 友链插件
-│   │   ├── plugin.json
-│   │   ├── api/           # API 源码
-│   │   └── pages/         # 页面源码
-│   └── rss-feed/          # RSS 插件
-│       ├── plugin.json
-│       └── api/
-│
-├── themes/                # 主题（自包含，自动发现）
-│   ├── saas/              # 紫橙主题
-│   │   ├── theme.json     # {id, name, icon, features}
-│   │   └── layout.vue
-│   └── default/           # 极简主题
-│       ├── theme.json
-│       └── layout.vue
-│
-├── layouts/               # Nuxt 布局（薄包装→themes/）
-│   ├── default.vue        # 主题切换器
-│   ├── saas.vue           # → themes/saas/layout.vue
-│   └── admin.vue          # 后台布局
-│
-├── types/index.ts
-├── docs/                  # 文档
-└── public/                # 静态文件 + _headers
+│   │   └── rss.xml.ts       # RSS（重导出→插件）
+│   ├── utils/               # 引擎工具
+│   │   ├── auth.ts          # requireAuth
+│   │   ├── crypto.ts        # 密码哈希
+│   │   ├── jwt.ts           # JWT
+│   │   ├── db.ts            # D1 连接
+│   │   ├── db-helpers.ts    # rows<T>() / first<T>()
+│   │   ├── rate-limit.ts    # 令牌桶
+│   │   ├── sanitize.ts      # HTML 消毒
+│   │   └── plugin-registry.ts
+│   └── schema.sql           # 数据库建表
+├── public/                  # 静态文件
+├── docs/                    # 文档
+├── nuxt.config.ts
+├── tailwind.config.ts
+└── package.json
 ```
 
 ## 🧩 插件开发
@@ -132,7 +119,7 @@ shiguang/
 ### 目录结构
 
 ```
-plugins/my-plugin/
+app/plugins/my-plugin/
 ├── plugin.json          # 元数据（必须）
 │   {
 │     "name": "my-plugin",
@@ -153,23 +140,23 @@ plugins/my-plugin/
 
 ```bash
 # 1. 建文件夹 + 写 plugin.json
-mkdir plugins/my-plugin
+mkdir app/plugins/my-plugin
 
 # 2. 写功能代码
-#    API → plugins/my-plugin/api/
-#    页面 → plugins/my-plugin/pages/
+#    API → app/plugins/my-plugin/api/
+#    页面 → app/plugins/my-plugin/pages/
 
-# 3. 在 server/api/ 创建重导出文件（一行）
-echo "export { default } from '~/plugins/my-plugin/api/index.get'" > server/api/my-plugin.get.ts
+# 3. 在 engine/api/ 创建重导出文件（一行）
+echo "export { default } from '~/plugins/my-plugin/api/index.get'" > engine/api/my-plugin.get.ts
 ```
 
 如果需要启用/禁用开关，在 API 入口加：
 ```ts
-import { isPluginEnabled } from '~~/server/utils/plugin-registry'
+import { isPluginEnabled } from '~~/engine/utils/plugin-registry'
 if (!isPluginEnabled('my-plugin')) throw createError({ statusCode: 404 })
 ```
 
-**不需要**改 `plugins/registry.ts`。系统自动扫描 `plugin.json`。
+**不需要**改 `app/plugins/registry.ts`。系统自动扫描 `plugin.json`。
 
 ## 🎨 主题开发
 
@@ -191,16 +178,16 @@ if (!isPluginEnabled('my-plugin')) throw createError({ statusCode: 404 })
 
 ### layout.vue
 
-包含 `<slot />` 用于插入页面内容。以 `themes/default/layout.vue` 为模板修改。
+包含 `<slot />` 用于插入页面内容。以 `app/themes/default/layout.vue` 为模板修改。
 
 ### 三步开发
 
 ```bash
-cp -r themes/default themes/my-theme
+cp -r app/themes/default app/themes/my-theme
 # 改 theme.json → 改 layout.vue → 后台自动出现
 ```
 
-**不需要**改 `pages/admin/themes.vue`。
+**不需要**改 `app/pages/admin/themes.vue`。
 
 ## 关键约定
 
@@ -218,11 +205,11 @@ cp -r themes/default themes/my-theme
 
 ```ts
 // 管理 API
-import { requireAuth } from '~~/server/utils/auth'
+import { requireAuth } from '~~/engine/utils/auth'
 const { userId, username, role } = await requireAuth(event)
 
 // 速率限制
-import { checkRateLimit } from '~~/server/utils/rate-limit'
+import { checkRateLimit } from '~~/engine/utils/rate-limit'
 checkRateLimit(`action:${ip}`, 10, 60)
 
 // 前端请求
@@ -231,4 +218,4 @@ const { fetch } = useApi()  // 自动注入 auth_token
 
 ## 数据库
 
-详见 `server/api/setup.post.ts` 中的 `CREATE TABLE` 语句。首次部署访问 `/admin/setup` 自动建表。
+详见 `engine/api/setup.post.ts` 中的 `CREATE TABLE` 语句。首次部署访问 `/admin/setup` 自动建表。

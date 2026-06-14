@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     layouts: 'layouts',
     components: 'components',
     middleware: 'middleware',
+    plugins: '_nuxt-plugins',
     public: '../public',
     assets: 'assets',
   },
