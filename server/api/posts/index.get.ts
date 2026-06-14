@@ -4,16 +4,7 @@ import { requireAuth } from '~~/server/utils/auth'
 export default defineEventHandler(async (event) => {
   const db = getDB(event)
   const q = getQuery(event)
-
-  // 定时发布：每次访问公开列表时检查到期文章并自动发布
   const status = (q.status as string) || 'published'
-  if (status === 'published') {
-    try {
-      await db.prepare(
-        "UPDATE posts SET status = 'published', publish_at = NULL, updated_at = datetime('now') WHERE status = 'draft' AND publish_at IS NOT NULL AND publish_at <= datetime('now') AND deleted_at IS NULL"
-      ).run()
-    } catch (e) { console.error('[定时发布] 检查失败:', e) }
-  }
 
   const page = Math.max(1, parseInt(q.page as string) || 1)
   const limit = Math.min(50, Math.max(1, parseInt(q.limit as string) || 10))

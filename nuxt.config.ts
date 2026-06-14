@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare-pages',
     prerender: {
-      routes: ['/', '/about', '/archive', '/links', '/yibai'],
+      routes: ['/', '/about', '/archive', '/links'],
       crawlLinks: false,
     },
     routeRules: {
@@ -21,16 +21,7 @@ export default defineNuxtConfig({
       '/links': {
         headers: { 'Cache-Control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400' },
       },
-      '/yibai': {
-        headers: { 'Cache-Control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400' },
-      },
-      '/api/cover/**': {
-        headers: {
-          'Content-Type': 'image/svg+xml',
-          'Cache-Control': 'public, max-age=86400',
-          'X-Frame-Options': 'SAMEORIGIN',
-        },
-      },
+
       '/api/**': {
         headers: {
           'X-Content-Type-Options': 'nosniff',

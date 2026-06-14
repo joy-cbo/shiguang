@@ -9,7 +9,7 @@ export interface User {
   nickname: string
   email: string
   avatar: string
-  role: 'admin' | 'editor' | 'author'
+  role: 'admin' | 'author'
   status: 'active' | 'disabled'
   login_attempts: number
   locked_until: string | null
@@ -30,9 +30,7 @@ export interface Post {
   author_id: number
   category_id: number | null
   view_count: number
-  reading_time: number
   deleted_at: string | null
-  publish_at: string | null
   created_at: string
   updated_at: string
   // JOIN 字段
@@ -81,48 +79,6 @@ export interface Link {
   created_at: string
 }
 
-// ========== 社交链接 ==========
-export interface SocialLink {
-  id: number
-  platform: string
-  url: string
-  icon: string
-  sort_order: number
-  visible: boolean
-}
-
-// ========== 附件 ==========
-export interface Attachment {
-  id: number
-  filename: string
-  url: string
-  size: number
-  type: string
-  category: 'image' | 'video' | 'other'
-  created_at: string
-}
-
-// ========== 访问日志 ==========
-export interface VisitLog {
-  id: number
-  ip: string
-  ip_region: string
-  visited_url: string
-  referer: string
-  user_agent: string
-  created_at: string
-}
-
-// ========== 通知日志 ==========
-export interface NotificationLog {
-  id: number
-  type: string
-  title: string
-  content: string
-  status: 'sent' | 'failed'
-  created_at: string
-}
-
 // ========== JWT 载荷 ==========
 export interface JwtPayload {
   userId: number
@@ -137,7 +93,6 @@ export interface PaginatedResponse<T> {
   tags?: T[]
   pages?: T[]
   links?: T[]
-  attachments?: T[]
   total: number
   page: number
   limit: number
@@ -164,17 +119,5 @@ export interface RelatedPost {
   title: string
   slug: string
   cover: string
-  created_at: string
-}
-
-// ========== 壹佰时光轴 ==========
-export interface YibaiEvent {
-  id: number
-  event_date: string
-  title: string
-  content: string
-  photo_url: string
-  weight: string
-  type: 'milestone' | 'weight' | 'photo' | 'expense' | 'health'
   created_at: string
 }
