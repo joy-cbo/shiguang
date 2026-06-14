@@ -1,25 +1,33 @@
 // D1 数据库工具 — Cloudflare Pages 环境
-// 兼容多种 Nitro / Cloudflare Pages 绑定暴露方式
+// 自动发现 D1 绑定，不依赖固定变量名
 import { createError } from 'h3'
 
 export function getDB(event: any): D1Database {
-  // 尝试所有可能的绑定路径
   const ctx = event.context?.cloudflare || event.context?.cf || {}
   const platform = (globalThis as any).__env__ || (globalThis as any).env || {}
+  const all = { ...platform, ...(ctx?.env || {}) }
 
-  const db = (
-    ctx?.env?.DB ||           // Nitro cloudflare-pages 标准路径
-    platform?.DB ||            // globalThis.__env__ / env
-    (globalThis as any).DB     // 直接挂 globalThis
-  ) as D1Database
+  // 优先匹配常见变量名
+  let db = (all.DB || all['shiguang-db'] || all['blog-db']) as D1Database | undefined
+
+  // 都找不到就遍历，取第一个 D1 对象（有 exec 方法的就是 D1）
+  if (!db) {
+    for (const key of Object.keys(all)) {
+      const val = all[key]
+      if (val && typeof val === 'object' && typeof (val as any).exec === 'function') {
+        db = val as D1Database
+        break
+      }
+    }
+  }
 
   if (!db) {
-    // 调试信息：列出可用的绑定键名（不泄露值）
-    const available = Object.keys(ctx?.env || {}).concat(Object.keys(platform || {}))
-    const hint = available.length
-      ? `找到绑定: [${available.join(', ')}]，但没有名为 'DB' 的绑定。请在 Cloudflare 后台将 D1 绑定变量名设为 'DB'`
-      : '未找到任何绑定，请在 Cloudflare Pages 设置 → 绑定中添加 D1 数据库，变量名填 DB'
-    throw createError({ statusCode: 500, statusMessage: hint, message: '数据库未绑定' })
+    const names = Object.keys(all).join(', ') || '(空)'
+    throw createError({
+      statusCode: 500,
+      statusMessage: `当前绑定变量名: [${names}]。请确保在 Cloudflare 后台绑定了 D1 数据库`,
+      message: '数据库未绑定'
+    })
   }
   return db
 }
