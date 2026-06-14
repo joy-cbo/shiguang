@@ -143,4 +143,4 @@ Cloudflare 看到 GitHub 有新代码，**自动帮你重新构建部署**——
 
 - 初始化页面打不开 → 确认 JWT_SECRET 环境变量有没有填
 - 数据库报错 → 确认第六步的 D1 绑定有没有做
-- 其他问题 → 去 GitHub 提 Issue：https://github.com/joy-cbo/shiguang/issues
+- 其他问题 → 发邮件：joy.cb@qq.com
