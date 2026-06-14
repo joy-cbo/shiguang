@@ -51,7 +51,7 @@
 
 ```bash
 # 1. 下载代码
-git clone https://gitee.com/你的用户名/shiguang.git
+git clone https://gitee.com/lin-0227/shiguang.git
 cd shiguang
 
 # 2. 安装依赖
