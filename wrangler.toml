@@ -1,15 +1,15 @@
 # Cloudflare Pages 配置
-name = "blog"
+name = "shiguang"
 compatibility_date = "2025-05-15"
 pages_build_output_dir = "dist"
 
 # D1 数据库绑定
 [[d1_databases]]
 binding = "DB"
-database_name = "blog-db"
-database_id = "378a7bee-3dc9-428e-b4fd-9da51dafb7aa"
+database_name = "shiguang-db"
+database_id = ""  # 填你的 D1 数据库 ID
 
 # R2 存储桶绑定
 [[r2_buckets]]
 binding = "R2"
-bucket_name = "blog-files"
+bucket_name = "shiguang-files"

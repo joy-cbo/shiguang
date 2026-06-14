@@ -38,7 +38,7 @@
 
 | 设置项 | 填什么 |
 |--------|--------|
-| 项目名称 | `shiguang-blog`（默认就行） |
+| 项目名称 | `shiguang` |
 | 生产分支 | `master` |
 | 构建命令 | `npm run build` |
 | 输出目录 | `dist` |
@@ -61,7 +61,7 @@
 
 1. Cloudflare 后台左侧点 **Workers & Pages** → **D1**
 2. 点 **创建数据库**
-3. 名称填 `blog-db` → 点创建
+3. 名称填 `shiguang-db` → 点创建
 
 记下数据库 ID（一串字母数字，后面要用）。
 
@@ -71,7 +71,7 @@
 
 1. Cloudflare 后台左侧点 **R2**
 2. 点 **创建存储桶**
-3. 名称填 `blog-files` → 点创建
+3. 名称填 `shiguang-files` → 点创建
 4. 进入存储桶 → 设置 → **公开访问** → 允许
 
 ---
@@ -80,14 +80,14 @@
 
 回到你的 Pages 项目：
 
-1. Cloudflare 后台 → Workers & Pages → `shiguang-blog`
+1. Cloudflare 后台 → Workers & Pages → `shiguang`
 2. 点 **设置** → **绑定**
 3. **添加 D1 数据库绑定**：
    - 变量名填 `DB`
-   - 选刚才创建的 `blog-db`
+   - 选刚才创建的 `shiguang-db`
 4. **添加 R2 存储桶绑定**：
    - 变量名填 `R2`
-   - 选刚才创建的 `blog-files`
+   - 选刚才创建的 `shiguang-files`
 
 ---
 
@@ -101,7 +101,7 @@
 等一两分钟，部署成功后会显示网址，类似：
 
 ```
-https://shiguang-blog-xxxx.pages.dev
+https://shiguang-xxxx.pages.dev
 ```
 
 ---
@@ -120,7 +120,7 @@ https://shiguang-blog-xxxx.pages.dev
 ## （可选）绑定自定义域名
 
 1. Cloudflare 后台 → 你的域名 → DNS → 添加记录
-   - 类型 CNAME，名称 `@`，目标填 `shiguang-blog.pages.dev`
+   - 类型 CNAME，名称 `@`，目标填 `shiguang.pages.dev`
 2. 回到 Pages 项目 → **自定义域** → 输入你的域名 → 保存
 
 ---
