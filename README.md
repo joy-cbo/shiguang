@@ -30,12 +30,12 @@
 **插件系统**（自由选装，自动发现）
 - 🔗 友链展示 — 前台友链页 + 后台管理
 - 📡 RSS 订阅 — 标准 RSS 2.0 输出
-- 🧩 安装即用 — 新建 `plugins/你的插件/plugin.json` 即自动注册，不用改任何共享文件
+- 🧩 安装即用 — 新建 `app/plugins/你的插件/plugin.json` 即自动注册，不用改任何共享文件
 
 **主题系统**（自由切换，自动发现）
 - 🎨 紫橙 SaaS 主题（默认）— 毛玻璃导航 + 渐变系统
 - ⬜ 极简白色主题 — 适合纯文字阅读
-- 🖌️ 安装即用 — 新建 `themes/你的主题/theme.json` + `layout.vue` 即自动出现
+- 🖌️ 安装即用 — 新建 `app/themes/你的主题/theme.json` + `layout.vue` 即自动出现
 
 ---
 
@@ -80,7 +80,7 @@ npx wrangler pages deploy dist --project-name=你的项目名 --branch=main
 ## 🧩 插件开发
 
 ```
-plugins/
+app/plugins/
 ├── registry.ts               # 自动发现，不需手改
 ├── friend-links/             # 友链插件（自包含）
 │   ├── plugin.json           # 元数据（name/version/features）
@@ -100,22 +100,22 @@ plugins/
 
 ```bash
 # 1. 建文件夹 + 写 plugin.json
-mkdir plugins/my-plugin
-echo '{"name":"my-plugin","version":"1.0.0","description":"我的插件","features":["功能A"]}' > plugins/my-plugin/plugin.json
+mkdir app/plugins/my-plugin
+echo '{"name":"my-plugin","version":"1.0.0","description":"我的插件","features":["功能A"]}' > app/plugins/my-plugin/plugin.json
 
-# 2. 写 API 和页面代码 → plugins/my-plugin/api/、plugins/my-plugin/pages/
+# 2. 写 API 和页面代码 → app/plugins/my-plugin/api/、app/plugins/my-plugin/pages/
 
-# 3. 在 server/api/ 和 pages/ 创建重导出文件（一行代码）
+# 3. 在 engine/api/ 和 app/pages/ 创建重导出文件（一行代码）
 ```
 
-**不需要改 `plugins/registry.ts`** — 系统自动扫描 `plugin.json` 注册。
+**不需要改 `app/plugins/registry.ts`** — 系统自动扫描 `plugin.json` 注册。
 
 ---
 
 ## 🎨 主题开发
 
 ```
-themes/
+app/themes/
 ├── saas/
 │   ├── theme.json       # 元数据（name/id/icon/features）
 │   └── layout.vue       # 完整布局源码
@@ -128,7 +128,7 @@ themes/
 
 ```bash
 # 1. 复制一份
-cp -r themes/default themes/my-theme
+cp -r app/themes/default app/themes/my-theme
 
 # 2. 改 theme.json（id、name、icon、features）
 # 3. 改 layout.vue（导航栏、配色、布局）

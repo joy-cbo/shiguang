@@ -17,7 +17,7 @@ themes/{name}/
 
 ## 开发新主题
 
-1. 复制 `themes/default/` → `themes/你的主题名/`
+1. 复制 `app/themes/default/` → `app/themes/你的主题名/`
 2. 修改 `theme.json`（名称、id、描述、配色、特性）
 3. 修改 `layout.vue`（导航栏、页脚、整体布局）
 4. 在 `pages/admin/themes.vue` 的 `themes` 数组中注册
