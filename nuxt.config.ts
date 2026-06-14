@@ -5,15 +5,12 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare-pages',
     prerender: {
-      routes: ['/', '/about', '/archive', '/links'],
+      routes: ['/', '/archive', '/links'],
       crawlLinks: false,
     },
     routeRules: {
       '/': {
         headers: { 'Cache-Control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400' },
-      },
-      '/about': {
-        headers: { 'Cache-Control': 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800' },
       },
       '/archive': {
         headers: { 'Cache-Control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400' },

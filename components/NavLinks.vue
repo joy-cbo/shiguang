@@ -16,7 +16,7 @@ const links = [
   { to: '/', label: '首页' },
   { to: '/archive', label: '归档' },
   { to: '/links', label: '友链' },
-  { to: '/about', label: '关于' },
+  { to: '/page/about', label: '关于' },
 ]
 </script>
 

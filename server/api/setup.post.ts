@@ -50,5 +50,14 @@ export default defineEventHandler(async (event) => {
     'INSERT INTO users (username, password_hash, nickname, role) VALUES (?, ?, ?, ?)'
   ).bind(username, passwordHash, nickname || username, 'admin').run()
 
+  // 插入默认「关于」页面（用户可在后台自行修改）
+  await db.prepare(
+    `INSERT OR IGNORE INTO pages (title, slug, content) VALUES (?, ?, ?)`
+  ).bind(
+    '关于本站',
+    'about',
+    `<p>欢迎来到我的博客。</p><p>在这里记录生活、分享想法。</p>`
+  ).run()
+
   return { success: true, message: '初始化成功，请登录' }
 })

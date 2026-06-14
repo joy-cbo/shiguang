@@ -14,7 +14,7 @@
       <h1 class="text-2xl md:text-3xl font-bold mb-3">{{ post.title }}</h1>
       <p class="text-sm text-gray-500 mb-6 flex items-center gap-2 flex-wrap">
         <img v-if="post.author_avatar" :src="post.author_avatar" class="w-5 h-5 rounded-full" />
-        <NuxtLink v-if="post.author_id" to="/about" class="hover:text-purple-600">{{ post.author_nickname || '匿名' }}</NuxtLink>
+        <NuxtLink v-if="post.author_id" to="/page/about" class="hover:text-purple-600">{{ post.author_nickname || '匿名' }}</NuxtLink>
         <span>·</span>
         <span>{{ formatDate(post.created_at) }}</span>
         <span>·</span>
