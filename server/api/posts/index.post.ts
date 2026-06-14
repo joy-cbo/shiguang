@@ -8,9 +8,9 @@ export default defineEventHandler(async (event) => {
   const ip = event.headers.get('x-forwarded-for') || ''
   if (ip) checkRateLimit(`post:${ip}`, 20, 60)
 
-  const { title, slug, content, excerpt, cover, status, category_id, tags } = await readBody(event) as {
+  const { title, slug, content, excerpt, cover, status, category_id, tags, is_pinned } = await readBody(event) as {
     title?: string; slug?: string; content?: string; excerpt?: string
-    cover?: string; status?: string; category_id?: number; tags?: string[]
+    cover?: string; status?: string; category_id?: number; tags?: string[]; is_pinned?: number
   }
 
   if (!title) throw createError({ statusCode: 400, message: '标题不能为空' })
@@ -22,10 +22,10 @@ export default defineEventHandler(async (event) => {
   if (existing) throw createError({ statusCode: 409, message: '该固定链接已存在' })
 
   const result = await db.prepare(
-    'INSERT INTO posts (title, slug, content, excerpt, cover, status, category_id, author_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    'INSERT INTO posts (title, slug, content, excerpt, cover, status, is_pinned, category_id, author_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
   ).bind(
     sanitize(title), finalSlug, sanitize(content || ''), sanitize(excerpt || ''),
-    cover || '', status || 'draft', category_id || null, userId
+    cover || '', status || 'draft', is_pinned || 0, category_id || null, userId
   ).run()
 
   const postId = result.meta?.last_row_id as number
