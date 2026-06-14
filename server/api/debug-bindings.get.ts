@@ -1,5 +1,8 @@
-// 临时诊断接口 — 查看 Cloudflare 绑定的实际变量名
-export default defineEventHandler((event) => {
+// 诊断接口 — 仅管理员可访问
+import { requireAuth } from '~~/server/utils/auth'
+
+export default defineEventHandler(async (event) => {
+  await requireAuth(event)
   const ctx = event.context?.cloudflare || event.context?.cf || {}
   const platform = (globalThis as any).__env__ || (globalThis as any).env || {}
   const env = { ...platform, ...(ctx?.env || {}) }

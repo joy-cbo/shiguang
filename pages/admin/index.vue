@@ -56,7 +56,7 @@ onMounted(async () => {
       { label: '已发布', value: published, color: 'text-green-600', link: '/admin/posts' },
       { label: '草稿', value: drafts, color: 'text-orange-600', link: '/admin/posts' },
     ]
-  } catch {} finally { loading.value = false }
+  } catch (e) { console.error('仪表盘加载失败:', e) } finally { loading.value = false }
 })
 
 // 加载最近文章
@@ -64,6 +64,6 @@ onMounted(async () => {
   try {
     const data = await fetch<{ posts: Post[] }>('/api/posts?status=all&limit=5')
     recentPosts.value = data.posts || []
-  } catch {}
+  } catch (e) { console.error('最近文章加载失败:', e) }
 })
 </script>
