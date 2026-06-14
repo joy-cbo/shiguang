@@ -1,9 +1,8 @@
 /**
- * 拾光博客 — 插件注册表
- * 
- * 管理所有插件元数据和启停状态。
- * 插件代码在构建时由 Nuxt 自动发现（server/api/、pages/ 等），
- * registry 控制 UI 可见性和运行时行为。
+ * 插件注册表
+ *
+ * 自动扫描 plugins 目录下的 plugin.json, 无需手写注册.
+ * 第三方开发插件只需建文件夹加 plugin.json, 不用改此文件.
  */
 
 export interface PluginMeta {
@@ -11,13 +10,19 @@ export interface PluginMeta {
   version: string
   description: string
   enabled: boolean
-  /** 插件目录名（plugins/ 下的文件夹名） */
   dir: string
-  /** 是否内置（内置插件不可删除） */
   builtin: boolean
-  /** 依赖的其他插件名列表 */
   requires?: string[]
-  /** 插件提供的功能列表（供管理面板展示） */
+  features?: string[]
+}
+
+interface PluginJson {
+  name: string
+  version: string
+  description: string
+  enabled?: boolean
+  builtin?: boolean
+  requires?: string[]
   features?: string[]
 }
 
@@ -53,24 +58,23 @@ export function togglePlugin(name: string, enabled: boolean): boolean {
   return false
 }
 
-// ======== 注册内置插件 ========
+// ======== 自动发现：扫描 plugins/*/plugin.json ========
 
-regPlugin({
-  name: 'friend-links',
-  version: '1.0.0',
-  description: '友链展示：前台友链页 + 后台管理',
-  enabled: true,
-  dir: 'friend-links',
-  builtin: true,
-  features: ['友链列表展示', '后台友链管理', '友链排序'],
-})
+const modules = import.meta.glob<{ default: PluginJson }>('/plugins/*/plugin.json', { eager: true })
 
-regPlugin({
-  name: 'rss-feed',
-  version: '1.0.0',
-  description: 'RSS 2.0 订阅：/api/rss.xml',
-  enabled: true,
-  dir: 'rss-feed',
-  builtin: true,
-  features: ['RSS 2.0 订阅源', '自动包含最近文章'],
-})
+for (const [path, module] of Object.entries(modules)) {
+  const meta = module.default
+  const dir = path.split('/')[2]   // /plugins/{dir}/plugin.json
+  if (!meta.name || !dir) continue
+
+  regPlugin({
+    name: meta.name,
+    version: meta.version || '0.1.0',
+    description: meta.description || '',
+    enabled: meta.enabled ?? true,
+    dir,
+    builtin: meta.builtin ?? false,
+    requires: meta.requires || [],
+    features: meta.features || [],
+  })
+}

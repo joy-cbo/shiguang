@@ -11,9 +11,7 @@
       >
         <!-- 预览图占位 -->
         <div class="h-40 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
-          <IconShiguang v-if="theme.id === 'saas'" name="palette" size="36" class="text-purple-500" />
-          <IconShiguang v-else-if="theme.id === 'halo-style'" name="image" size="36" class="text-purple-500" />
-          <IconShiguang v-else name="home" size="36" class="text-purple-500" />
+          <IconShiguang :name="theme.icon || 'home'" size="36" class="text-purple-500" />
         </div>
         
         <div class="p-4">
@@ -54,41 +52,19 @@
 </template>
 
 <script setup lang="ts">
-interface ThemeInfo {
+interface ThemeJson {
   id: string
   name: string
   version: string
-  author: string
+  author?: string
   description: string
+  icon?: string
   features?: string[]
 }
 
-const themes = ref<ThemeInfo[]>([
-  {
-    id: 'default',
-    name: '默认主题',
-    version: '1.0.0',
-    author: '拾光',
-    description: '拾光博客默认主题，深色/亮色双模式，简洁实用',
-    features: ['暗黑模式', '响应式布局', 'Tailwind CSS']
-  },
-  {
-    id: 'halo-style',
-    name: 'Halo 风格',
-    version: '1.0.0',
-    author: '拾光',
-    description: '仿 Halo 博客的简洁风格',
-    features: ['Halo 风格', '暗黑模式']
-  },
-  {
-    id: 'saas',
-    name: 'SaaS',
-    version: '1.0.0',
-    author: 'Hermes',
-    description: '轻科技感 SaaS 风格 — 大面积留白、紫橙渐变、毛玻璃卡片',
-    features: ['毛玻璃导航栏', '紫橙渐变光感', '卡片悬停上浮', '柔光阴影']
-  }
-])
+// 自动发现 themes/*/theme.json — 第三方加主题不用改此文件
+const themeModules = import.meta.glob<{ default: ThemeJson }>('/themes/*/theme.json', { eager: true })
+const themes = Object.entries(themeModules).map(([path, m]) => m.default)
 
 const activeTheme = ref('default')
 const switching = ref('')
@@ -116,7 +92,6 @@ async function switchTheme(themeId: string) {
     localStorage.setItem('active_theme', themeId)
     switchMsg.value = '主题已切换！刷新前台页面即可看到效果'
     switchError.value = false
-    // 3秒后刷新当前页面看看
     setTimeout(() => { switchMsg.value = '' }, 5000)
   } catch (e: any) {
     switchMsg.value = e?.data?.message || '切换失败'

@@ -2,6 +2,7 @@
   "name": "默认极简",
   "id": "default",
   "version": "1.0.0",
+  "icon": "home",
   "description": "极简白色主题 — 干净清爽，适合纯文字阅读",
   "author": "拾光博客",
   "license": "MIT",

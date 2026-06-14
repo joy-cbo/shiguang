@@ -1,6 +1,7 @@
 {
   "name": "rss-feed",
   "version": "1.0.0",
+  "builtin": true,
   "description": "RSS 2.0 订阅源插件",
   "author": "拾光博客",
   "license": "MIT",

@@ -1,6 +1,7 @@
 {
   "name": "friend-links",
   "version": "1.0.0",
+  "builtin": true,
   "description": "友链展示插件 — 前台友链页 + 后台友链管理",
   "author": "拾光博客",
   "license": "MIT",
