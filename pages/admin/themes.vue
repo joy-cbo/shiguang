@@ -11,7 +11,7 @@
       >
         <!-- 预览图占位 -->
         <div class="h-40 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
-          <span class="text-4xl">{{ theme.id === 'saas' ? '🎨' : theme.id === 'halo-style' ? '🖼️' : '🏠' }}</span>
+          <span class="text-4xl">{{ theme.id === 'saas' ? `<IconShiguang name='palette' size='36'/>` : theme.id === 'halo-style' ? `<IconShiguang name='image' size='36'/>` : `<IconShiguang name='home' size='36'/>` }}</span>
         </div>
         
         <div class="p-4">

@@ -14,7 +14,7 @@
         <div class="aspect-[4/3] bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
           <img v-if="isImage(item.key)" :src="item.url" :alt="item.filename"
             class="w-full h-full object-cover" loading="lazy" />
-          <span v-else class="text-4xl">📁</span>
+          <span v-else class="text-4xl"><IconShiguang name="folder" size="36" class="text-gray-400"/></span>
         </div>
 
         <!-- 信息 -->

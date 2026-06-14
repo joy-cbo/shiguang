@@ -48,7 +48,7 @@
       <div class="space-y-3">
         <input v-model="pwd.oldPassword" type="password" placeholder="旧密码" class="w-full border rounded px-3 py-2 dark:bg-gray-800 dark:border-gray-600" />
         <input v-model="pwd.newPassword" type="password" placeholder="新密码（至少8位）" class="w-full border rounded px-3 py-2 dark:bg-gray-800 dark:border-gray-600" />
-        <button @click="changePassword" :disabled="pwd.loading" class="bg-orange-600 text-white px-4 py-2 rounded text-sm hover:bg-orange-700 disabled:opacity-50">{{ pwd.loading ? '修改中...' : '🔒 修改密码' }}</button>
+        <button @click="changePassword" :disabled="pwd.loading" class="bg-orange-600 text-white px-4 py-2 rounded text-sm hover:bg-orange-700 disabled:opacity-50">{{ pwd.loading ? '修改中...' : `<IconShiguang name="lock" class="inline align-[-3px] mr-1"/>修改密码` }}</button>
       </div>
     </div>
   </NuxtLayout>

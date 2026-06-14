@@ -12,11 +12,11 @@
           <SearchBox />
           <NavLinks mode="desktop" />
           <button v-if="isLoggedIn" @click="logout" class="hover:text-red-500">退出</button>
-          <button @click="toggleDark" class="text-lg">{{ isDark ? '☀️' : '🌙' }}</button>
+          <button @click="toggleDark" class="inline-flex items-center"><IconShiguang :name="isDark ? 'sun' : 'moon'" size="18"/></button>
         </nav>
         <div class="flex items-center gap-2 md:hidden">
           <SearchBox />
-          <button @click="toggleDark" class="text-lg">{{ isDark ? '☀️' : '🌙' }}</button>
+          <button @click="toggleDark" class="inline-flex items-center"><IconShiguang :name="isDark ? 'sun' : 'moon'" size="18"/></button>
           <button @click="menuOpen = !menuOpen" class="p-1 text-xl flex items-center" aria-label="菜单">
             <svg v-if="menuOpen" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
             <svg v-else xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>

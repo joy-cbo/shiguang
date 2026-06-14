@@ -6,8 +6,9 @@
       <NuxtLink to="/admin" class="text-lg font-bold mb-6 block">Blog 管理</NuxtLink>
       <nav class="flex-1 space-y-1 text-sm overflow-auto">
           <NuxtLink v-for="item in menu" :key="item.path" :to="item.path"
-            class="block px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 relative"
+            class="block px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 relative flex items-center gap-2"
             :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600': route.path === item.path }">
+            <IconShiguang :name="item.icon" size="16" class="shrink-0" />
             {{ item.label }}
             <span v-if="item.path === '/admin/comments' && unreadCount" class="absolute top-1.5 right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
           </NuxtLink>
@@ -33,9 +34,10 @@
         </div>
         <nav class="space-y-1 text-sm">
           <NuxtLink v-for="item in menu" :key="item.path" :to="item.path"
-            class="block px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            class="block px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2"
             :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600': route.path === item.path }"
             @click="sidebarOpen = false">
+            <IconShiguang :name="item.icon" size="16" class="shrink-0" />
             {{ item.label }}
           </NuxtLink>
         </nav>
@@ -56,20 +58,20 @@ const route = useRoute()
 const sidebarOpen = ref(false)
 
 const menu = [
-  { label: '仪表盘', path: '/admin' },
-  { label: '文章管理', path: '/admin/posts' },
-  { label: '写文章', path: '/admin/posts/write' },
-  { label: '分类管理', path: '/admin/categories' },
-  { label: '标签管理', path: '/admin/tags' },
-  { label: '页面管理', path: '/admin/pages' },
-  { label: '友链管理', path: '/admin/links' },
-  { label: '回收站', path: '/admin/trash' },
-  { label: '评论管理', path: '/admin/comments' },
-  { label: '插件管理', path: '/admin/plugins' },
-  { label: '主题管理', path: '/admin/themes' },
-  { label: '用户管理', path: '/admin/users' },
-  { label: '站点设置', path: '/admin/settings' },
-  { label: '个人资料', path: '/admin/profile' },
+  { label: '仪表盘', path: '/admin', icon: 'grid' },
+  { label: '文章管理', path: '/admin/posts', icon: 'file-text' },
+  { label: '写文章', path: '/admin/posts/write', icon: 'edit' },
+  { label: '分类管理', path: '/admin/categories', icon: 'folder' },
+  { label: '标签管理', path: '/admin/tags', icon: 'tag' },
+  { label: '页面管理', path: '/admin/pages', icon: 'file' },
+  { label: '友链管理', path: '/admin/links', icon: 'link' },
+  { label: '回收站', path: '/admin/trash', icon: 'trash' },
+  { label: '评论管理', path: '/admin/comments', icon: 'message-circle' },
+  { label: '插件管理', path: '/admin/plugins', icon: 'puzzle' },
+  { label: '主题管理', path: '/admin/themes', icon: 'palette' },
+  { label: '用户管理', path: '/admin/users', icon: 'users' },
+  { label: '站点设置', path: '/admin/settings', icon: 'settings' },
+  { label: '个人资料', path: '/admin/profile', icon: 'user' },
 ]
 
 const titleMap: Record<string, string> = {
