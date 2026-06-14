@@ -1,13 +1,11 @@
 /**
  * 友链插件 — 入口
  * 
- * 此插件的 API 和页面由 Nuxt 文件路由自动发现：
- * - server/api/links/          → API 端点
- * - pages/links.vue            → 前台友链页
- * - pages/admin/links.vue      → 后台友链管理
+ * 所有源代码均在此文件夹内：
+ * - api/          → API 端点（通过 server/api/links/ 重导出接入 Nuxt）
+ * - pages/        → 前台页面（通过 pages/links.vue 重导出接入 Nuxt）
+ * - plugin.json   → 元数据（名称/版本/特性列表）
  * 
- * 数据库表：links（在 schema.sql 中定义）
- * 
- * plugin.json 声明元数据，plugins/registry.ts 控制启停。
+ * 插件注册：plugins/registry.ts → regPlugin({ name: 'friend-links', ... })
  */
 export { }

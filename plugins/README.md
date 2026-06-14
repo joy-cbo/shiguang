@@ -1,36 +1,41 @@
-# 拾光博客 — 插件系统
+# 拾光博客 — 插件目录
 
-## 目录结构
+## 架构
+
+每个插件一个文件夹，自包含全部代码：
 
 ```
-plugins/
-├── registry.ts          # 插件注册表（元数据 + 启停状态）
-├── friend-links/        # 友链插件
-│   ├── plugin.json      # 插件元数据
-│   ├── api/             # API 端点
-│   ├── pages/           # 页面
-│   └── components/      # 组件
-└── rss-feed/            # RSS 插件
-    ├── plugin.json
-    └── api/
+plugins/{name}/
+├── plugin.json       # 元数据（名称/版本/描述/特性）
+├── README.md         # 说明文档
+├── api/              # API 路由处理函数
+│   └── ...           # Nuxt 通过 server/api/ 重导出接入
+├── pages/            # 前台/后台页面组件（可选）
+│   └── ...           # Nuxt 通过 pages/ 重导出接入
+└── index.ts          # 入口（说明文档）
 ```
 
-## 如何开发插件
+## 注册表
 
-1. 在 `plugins/` 下创建文件夹，命名即插件名
-2. 创建 `plugin.json` 声明元数据
-3. 在 `plugins/registry.ts` 中注册
-4. 放入 API/页面/组件文件
+`plugins/registry.ts` — 管理所有插件的元数据和启停状态。
 
-## plugin.json 格式
+- `regPlugin(p)` — 注册新插件
+- `isPluginEnabled(name)` — 检查是否启用（API/页面应查询此函数）
+- `togglePlugin(name, enabled)` — 切换启停
 
-```json
-{
-  "name": "插件名",
-  "version": "1.0.0",
-  "description": "一句话描述",
-  "author": "作者",
-  "features": ["功能1", "功能2"],
-  "requires": []
-}
-```
+## 已有插件
+
+| 插件 | 文件夹 | 功能 |
+|------|--------|------|
+| friend-links | `friend-links/` | 友链展示 + 后台管理 |
+| rss-feed | `rss-feed/` | RSS 2.0 订阅源 |
+
+## 开发新插件
+
+1. 复制 `plugins/friend-links/` → `plugins/你的插件名/`
+2. 修改 `plugin.json`
+3. 在 `api/` 中编写 API 处理函数
+4. 在 `server/api/` 创建对应的重导出文件
+5. 在 `plugins/registry.ts` 中调用 `regPlugin(...)` 注册
+6. 在插件的 API/页面函数中调用 `isPluginEnabled('你的插件名')` 做开关控制
+7. `npm run build` 验证

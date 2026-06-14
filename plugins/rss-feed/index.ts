@@ -1,9 +1,10 @@
 /**
  * RSS 订阅插件 — 入口
  * 
- * 此插件的 API 由 Nuxt 文件路由自动发现：
- * - server/api/rss.xml.ts      → RSS 2.0 订阅端点
+ * 所有源代码均在此文件夹内：
+ * - api/          → API 端点（通过 server/api/rss.xml.ts 重导出接入 Nuxt）
+ * - plugin.json   → 元数据（名称/版本/特性列表）
  * 
- * plugin.json 声明元数据，plugins/registry.ts 控制启停。
+ * 插件注册：plugins/registry.ts → regPlugin({ name: 'rss-feed', ... })
  */
 export { }
