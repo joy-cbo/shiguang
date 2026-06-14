@@ -5,14 +5,25 @@ export default defineEventHandler((event) => {
   const env = { ...platform, ...(ctx?.env || {}) }
 
   const keys = Object.keys(env)
-  const details: Record<string, string> = {}
+  const details: Record<string, any> = {}
   for (const k of keys) {
     try {
       const v = env[k]
-      if (v === null || v === undefined) details[k] = 'null/undefined'
-      else if (typeof v === 'function') details[k] = 'function'
-      else if (typeof v === 'object') details[k] = `object (keys: ${Object.keys(v).join(',')})`
-      else details[k] = typeof v
+      if (v === null || v === undefined) {
+        details[k] = 'null/undefined'
+      } else if (typeof v === 'object') {
+        // 检查是否为 D1 / R2
+        const hasExec = typeof (v as any).exec === 'function'
+        const hasPrepare = typeof (v as any).prepare === 'function'
+        const hasPut = typeof (v as any).put === 'function'
+        const hasGet = typeof (v as any).get === 'function'
+        let kind = 'object'
+        if (hasPrepare && hasExec) kind = 'D1Database ✅'
+        else if (hasPut && hasGet) kind = 'R2Bucket ✅'
+        details[k] = `${kind} (enumerable: ${Object.keys(v).join(',') || '(none)'}), exec=${hasExec}, prepare=${hasPrepare}, put=${hasPut}`
+      } else {
+        details[k] = typeof v
+      }
     } catch (e: any) {
       details[k] = `error: ${e.message}`
     }
