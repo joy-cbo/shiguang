@@ -1,180 +1,174 @@
-# 小白部署指南 — 博客部署到 Cloudflare Pages
+# 拾光博客 — 小白部署指南
 
-> 不需要懂编程，跟着步骤一步一步来。每步都有大白话解释。
-
----
-
-## 你需要准备
-
-- 一个 GitHub 账号 → [github.com](https://github.com) 免费注册
-- 一个 Cloudflare 账号 → [dash.cloudflare.com](https://dash.cloudflare.com) 免费注册
-- 服务器上已经写好的代码（在 `/home/lighthouse/blog` 目录）
+> 全程不需要写一行代码。跟着步骤点鼠标就行。
 
 ---
 
-## 第一步：把代码传到 GitHub
+## 你需要准备什么
 
-GitHub 是一个存代码的网站，类似"百度网盘但专门存代码"。
+- 一个 Cloudflare 账号（免费注册：https://dash.cloudflare.com/sign-up ）
+- 一个域名（可选，不用域名也能用 Cloudflare 给的免费域名）
+- 你的电脑（Windows / Mac 都行）
+- 大概 15 分钟
+
+---
+
+## 第一步：注册 Cloudflare
+
+1. 打开 https://dash.cloudflare.com/sign-up
+2. 填邮箱、密码，点注册
+3. 去邮箱点验证链接
+4. 登录后你会看到 Cloudflare 后台
+
+---
+
+## 第二步：下载代码
+
+打开你电脑的「终端」或「命令提示符」：
+
+**Windows：** 按 `Win` 键，搜 `cmd`，回车
+**Mac：** 按 `Cmd + 空格`，搜 `终端`，回车
+
+复制下面这行，粘贴进去，回车：
 
 ```bash
-cd /home/lighthouse/blog
-git init
-git add -A
-git commit -m "第2阶段完成"
-git branch -M main
-git remote add origin https://github.com/joy-cbo/blog.git
-git push -u origin main
+git clone https://gitee.com/lin-0227/shiguang.git
+cd shiguang
+npm install
 ```
 
-推送时会让你输入 GitHub 用户名和密码。**密码不是你的 GitHub 登录密码！** 要用 Personal Access Token：
-
-### 创建 Token（只做一次）
-
-1. 打开 [github.com/settings/tokens](https://github.com/settings/tokens)
-2. 点 **Generate new token (classic)**
-3. Note 填 `blog-deploy`，过期时间选 **No expiration**
-4. 勾选 `repo`（全部勾上）
-5. 拉到最下面点 **Generate token**
-6. **复制生成的 Token**（ghp_ 开头的一串字母），这个就是密码
+> 如果提示 `git` 或 `npm` 未安装，先去 https://nodejs.org 下载安装 Node.js（带 npm），再去 https://git-scm.com 下载安装 Git。
 
 ---
 
-## 第二步：创建 GitHub Actions 密钥
+## 第三步：安装 Wrangler
 
-GitHub Actions 是"自动干活机器人"，代码推上去后自动帮你部署。
-
-1. 打开你的 GitHub 仓库 → **Settings** → **Secrets and variables** → **Actions**
-2. 点 **New repository secret**，添加两个密钥：
-
-| Name | Value | 哪里获取 |
-|------|-------|----------|
-| `CLOUDFLARE_API_TOKEN` | 你的 Cloudflare API Token | 看下面 |
-| `CLOUDFLARE_ACCOUNT_ID` | 你的 Cloudflare 账号 ID | 看下面 |
-
-### 获取 Cloudflare API Token
-
-1. 打开 [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
-2. 点 **创建 Token** → 选 **自定义令牌**
-3. 权限设置：
-   - Account → Workers R2 Storage → **编辑**
-   - Account → D1 → **编辑**
-   - Account → Cloudflare Pages → **编辑**
-4. 点 **继续** → **创建令牌** → 复制 Token
-
-### 获取账号 ID
-
-打开 [dash.cloudflare.com](https://dash.cloudflare.com)，右侧栏有个 **账号 ID**，复制它。
-
----
-
-## 第三步：创建 D1 数据库
-
-D1 是 Cloudflare 的免费数据库，存文章、用户、评论等所有数据。
-
-1. Cloudflare 控制台 → 左侧菜单 → **Workers & Pages** → **D1**
-2. 点 **创建数据库**，名字填 `blog-db`
-3. 创建完成后，点进去，记下 **数据库 ID**（一串字母数字）
-
-### 建表
-
-1. 在 D1 数据库页面 → **控制台** 标签
-2. 打开 `schema.sql`，复制全部内容
-3. 粘贴到控制台，点执行
-
----
-
-## 第四步：创建 R2 存储桶（存图片/文件）
-
-R2 是 Cloudflare 的免费文件存储，存上传的图片、视频等。
-
-1. Cloudflare 控制台 → 左侧 → **R2**
-2. 点 **创建存储桶**，名字填 `blog-files`
-3. 创建完成
-
-> ⚠️ 上传说 R2 需要绑定到 Pages 项目，这一步在第五步做。
-
----
-
-## 第五步：创建 Pages 项目
-
-Pages 是 Cloudflare 的免费网站托管，把代码变成能访问的网站。
-
-1. Cloudflare 控制台 → **Workers & Pages** → **创建** → **Pages**
-2. 选择 **连接到 Git** → 授权 GitHub → 选 `blog` 仓库
-3. 构建设置：
-   - **构建命令**：`npm run build`
-   - **输出目录**：`dist`
-4. 环境变量（点"添加变量"）：
-
-| 变量名 | 值 | 说明 |
-|--------|-----|------|
-| `JWT_SECRET` | `my-blog-secret-2024` | 登录密钥，随便写一串英文数字，别让人知道 |
-
-5. 点 **保存并部署**
-
----
-
-## 第六步：绑定 D1 和 R2
-
-部署完成后，把数据库和文件存储"接"到网站上。
-
-1. Pages 项目 → **设置** → **绑定**
-2. 点 **添加** → **D1 数据库**：
-   - 变量名填 `DB`
-   - 选 `blog-db`
-3. 再点 **添加** → **R2 存储桶**：
-   - 变量名填 `R2`
-   - 选 `blog-files`
-4. 保存后，点 **部署** → **重新部署**（让绑定生效）
-
----
-
-## 第七步：初始化管理员
-
-1. 部署完成后，打开你的网站（比如 `https://blog-xxx.pages.dev`）
-2. 访问 `/admin/setup`（如 `https://blog-xxx.pages.dev/admin/setup`）
-3. 填入用户名和密码，点创建
-4. 创建完后自动跳到登录页 → 登录进入后台
-
----
-
-## 完成！🎉
-
-| 你想干啥 | 去哪 |
-|----------|------|
-| 看博客 | 网站首页 |
-| 写文章 | `/admin/posts/write` |
-| 管理内容 | `/admin` |
-| 站点设置 | `/admin/settings` |
-| 改代码后更新 | 推送到 GitHub，自动部署 |
-
----
-
-## 以后怎么更新
-
-改完代码后：
+Wrangler 是 Cloudflare 的命令行工具。继续在刚才的终端里：
 
 ```bash
-cd /home/lighthouse/blog
-git add -A
-git commit -m "更新了xxx功能"
-git push
+npm install -g wrangler
 ```
 
-推送后等 1-2 分钟，网站自动更新。不需要手动操作任何东西。
+安装完后登录：
+
+```bash
+wrangler login
+```
+
+会弹出一个浏览器窗口，点「允许」就行了。
 
 ---
 
-## 常见问题
+## 第四步：创建 D1 数据库
 
-**Q: 部署失败怎么办？**
-A: Cloudflare 控制台 → Pages → 你的项目 → 部署 → 点失败的部署 → 看日志。把日志发给我。
+在终端里（确保还在 `shiguang` 目录下）：
 
-**Q: 图片上传失败？**
-A: 检查第六步 R2 绑定是否正确，绑定后要重新部署。
+```bash
+wrangler d1 create blog-db
+```
 
-**Q: 登录后显示 401 错误？**
-A: 检查第五步的 `JWT_SECRET` 环境变量是否设置了，设置后要重新部署。
+执行后会输出类似这样的内容：
 
-**Q: 想用自己的域名？**
-A: Cloudflare Pages → 你的项目 → 自定义域 → 添加你的域名。
+```
+✅ Created database 'blog-db' with id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
+**把那个 `id` 复制下来**（一串字母数字横杠），后面要用。
+
+---
+
+## 第五步：创建 R2 存储桶
+
+```bash
+wrangler r2 bucket create blog-files
+```
+
+会输出 `✅ Created bucket 'blog-files'`
+
+---
+
+## 第六步：修改配置文件
+
+打开 `shiguang` 文件夹，找到 `wrangler.toml` 文件，用记事本打开。
+
+找到这一行：
+
+```toml
+database_id = "xxxxxxxxxxxxxxxxxxxxxxxx"
+```
+
+把 `xxxxxxxx` 替换成你**第四步复制的那串 ID**。保存文件。
+
+---
+
+## 第七步：设置 JWT 密钥
+
+[JWT 是什么？简单说就是一把钥匙，用来加密你的登录信息。你随便设一个别人猜不到的字符串就行。]
+
+在终端里运行：
+
+**Windows：**
+```bash
+wrangler pages secret put JWT_SECRET --project-name shiguang-blog
+```
+会提示你输入密钥，随便敲一串（至少 32 个字符，字母数字混合），回车。
+
+**例：** `nishuobudaojiushinibudao123456`
+
+> 安全提示：不要用这个例子中的密钥！
+
+---
+
+## 第八步：构建和部署
+
+```bash
+npm run build
+```
+
+等一两分钟，看到 `Build complete!` 就说明成功了。
+
+然后部署：
+
+```bash
+npx wrangler pages deploy dist --project-name=shiguang-blog --branch=main
+```
+
+稍等片刻，部署成功后会输出一个网址，类似：
+
+```
+https://xxxxxxxx.shiguang-blog.pages.dev
+```
+
+---
+
+## 第九步：初始化博客
+
+1. 浏览器打开刚才那个网址，后面加上 `/admin/setup`
+   - 比如：`https://xxxxxxxx.shiguang-blog.pages.dev/admin/setup`
+2. 你会看到一个页面：填用户名 + 密码
+3. 点「初始化」→ 数据库自动建表 → 完成！
+4. 用刚才填的用户名密码登录 → 开始写文章
+
+**博客上线了！**
+
+---
+
+## （可选）绑定自定义域名
+
+如果你有自己的域名，可以在 Cloudflare 后台绑定：
+
+1. Cloudflare 后台 → Workers & Pages → shiguang-blog
+2. 点「自定义域」→ 输入你的域名 → 保存
+3. 去域名 DNS 里加一条 CNAME 记录（Cloudflare 会告诉你怎么加）
+
+---
+
+## 遇到问题？
+
+- 部署报错 → 检查第四步的 database_id 有没有填对
+- 初始化页面打不开 → 检查 JWT_SECRET 有没有设置
+- 其他问题 → 去 Gitee 提 Issue：https://gitee.com/lin-0227/shiguang/issues
+
+---
+
+> 部署成功后，别忘了把赞赏码放进 README 😄
