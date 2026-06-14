@@ -1,5 +1,7 @@
 // D1 数据库工具 — Cloudflare Pages 环境
 // 兼容多种 Nitro / Cloudflare Pages 绑定暴露方式
+import { createError } from 'h3'
+
 export function getDB(event: any): D1Database {
   // 尝试所有可能的绑定路径
   const ctx = event.context?.cloudflare || event.context?.cf || {}
@@ -17,7 +19,7 @@ export function getDB(event: any): D1Database {
     const hint = available.length
       ? `找到绑定: [${available.join(', ')}]，但没有名为 'DB' 的绑定。请在 Cloudflare 后台将 D1 绑定变量名设为 'DB'`
       : '未找到任何绑定，请在 Cloudflare Pages 设置 → 绑定中添加 D1 数据库，变量名填 DB'
-    throw new Error(`数据库未绑定 — ${hint}`)
+    throw createError({ statusCode: 500, statusMessage: hint, message: '数据库未绑定' })
   }
   return db
 }
