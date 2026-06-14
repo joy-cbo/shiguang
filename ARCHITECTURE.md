@@ -77,13 +77,13 @@ shiguang/
 │   │   └── init.global.ts      # 暗黑模式初始化
 │   └── plugins/
 │       └── error-handler.ts    # 全局错误捕获 → 中文消息
-├── plugins/              # 可拔插插件（每个一个目录）
-│   ├── registry.ts           # 插件注册中心
-│   ├── friend-links/         # 友链插件
-│   └── rss-feed/             # RSS 订阅插件
-├── themes/               # 可切换主题
-│   ├── saas/                 # 默认紫橙主题
-│   └── default/              # 极简回退主题
+├── plugins/              # 可拔插插件（自包含，自动发现）
+│   ├── registry.ts           # 自动扫描 plugin.json 注册，不需手改
+│   ├── friend-links/         # 友链插件（含 api/ + pages/）
+│   └── rss-feed/             # RSS 插件（含 api/）
+├── themes/               # 可切换主题（自包含，自动发现）
+│   ├── saas/                 # 紫橙主题（theme.json + layout.vue）
+│   └── default/              # 极简主题（theme.json + layout.vue）
 ├── types/index.ts        # 全局 TypeScript 类型定义
 └── assets/css/main.css   # 全局样式（含 gradient-text / gradient-bg）
 ```
@@ -305,10 +305,12 @@ shiguang/
 #### 布局架构
 
 ```
-layouts/default.vue → 判断 activeTheme
-  ├─ 'saas'  → <SaasLayout />（毛玻璃导航 + 浅灰白背景 + 渐变装饰线）
-  └─ 其他     → 默认布局（白底 + 暗黑模式）
+layouts/default.vue → 主题切换器（判断 activeTheme）
+  ├─ 'saas'  → themes/saas/layout.vue（毛玻璃导航 + 浅灰白 + 渐变装饰线）
+  └─ 其他    → themes/default/layout.vue（白底 + 暗黑模式切换）
 ```
+
+主题支持自动发现：`pages/admin/themes.vue` 通过 `import.meta.glob` 扫描 `themes/*/theme.json`。新主题只需建文件夹 + 写 `theme.json` + `layout.vue`，后台自动出现，不需改任何共享文件。
 
 ---
 
@@ -318,14 +320,21 @@ layouts/default.vue → 判断 activeTheme
 
 ```
 plugins/
-├── registry.ts          # 注册中心：定义所有插件的元数据
+├── registry.ts          # 自动扫描 plugins/*/plugin.json 注册, 不需手改
 ├── friend-links/
-│   └── plugin.json      # 友链插件配置
+│   ├── plugin.json      # 元数据（name/version/features/builtin）
+│   ├── api/             # API handler 源码
+│   └── pages/           # 页面源码
 └── rss-feed/
-    └── plugin.json      # RSS 插件配置
+    ├── plugin.json
+    └── api/
 ```
 
-插件通过 `plugin.json` 声明自己的信息（名称、描述、版本、依赖），`registry.ts` 统一管理注册和加载。后台 `/admin/plugins` 可一键启停。
+插件通过 `plugin.json` 声明信息，`registry.ts` 在构建时通过 `import.meta.glob` 自动扫描注册，**不需手动调 `regPlugin()`**。后台 `/admin/plugins` 可一键启停。
+
+### 6.2 开发新插件
+
+新插件只需建 `plugins/xxx/plugin.json`，系统自动发现。不需要改 `registry.ts` 或任何共享文件。拉上游更新零合并冲突。
 
 ### 6.2 内置插件
 

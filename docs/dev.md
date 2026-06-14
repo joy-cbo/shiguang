@@ -1,6 +1,6 @@
 # 二次开发指南
 
-> 适合想改代码的开发者。完全不懂编程的话，看完 deploy.md 部署就能用了。
+> 适合想改代码的开发者。如果只是部署用，看 deploy.md 就够了。
 
 ## 环境要求
 
@@ -10,192 +10,225 @@
 ## 本地开发
 
 ```bash
-cd /home/lighthouse/blog
-npm install --registry=https://registry.npmmirror.com
+git clone https://github.com/joy-cbo/shiguang.git
+cd shiguang
+npm install
 cp .env.example .dev.vars
-# 编辑 .dev.vars，设置 JWT_SECRET=你的密钥
+# 编辑 .dev.vars，设 JWT_SECRET=任意随机字符串
 npm run dev
 ```
 
-访问 `http://localhost:3000`
+访问 `http://localhost:3000` → `/admin/setup` 初始化管理员。
 
-## 项目结构（共 85 个源文件）
+> 本地开发不需要 Cloudflare 账号。D1/R2 只在部署到 Cloudflare Pages 时需要。
+
+## 项目结构
 
 ```
-blog/
-├── components/
-│   ├── SearchBox.vue          # 搜索框（导航栏实时下拉）
-│   └── TipTapEditor.vue       # 富文本编辑器
+shiguang/
+├── components/            # 共享 Vue 组件
+│   ├── CommentSection.vue
+│   ├── NavLinks.vue       # 导航链接（desktop/mobile/footer）
+│   ├── SearchBox.vue      # 实时搜索框
+│   ├── SiteFooter.vue     # 统一页脚
+│   ├── TableOfContents.vue
+│   ├── Breadcrumb.vue
+│   ├── RelatedPosts.vue
+│   └── IconShiguang.vue   # SVG 图标组件（30+ 图标）
 │
-├── composables/               # Vue 组合式函数
-│   ├── useApi.ts              # 统一 fetch（自动注入 token + 错误处理）
-│   ├── useAutoSave.ts         # 草稿自动保存（30秒存 localStorage）
-│   ├── useFormat.ts           # 日期格式化 / stripHtml / timeAgo
-│   ├── usePostNav.ts          # 上一篇/下一篇导航
-│   ├── useSanitize.ts         # 前端 XSS 消毒
-│   └── useTagCloud.ts         # 标签云数据
+├── composables/           # Vue 组合式函数
+│   ├── useApi.ts          # 统一 fetch（自动注入 token）
+│   ├── useSite.ts         # 站点配置共享状态
+│   ├── useFormat.ts       # 日期格式化 / 阅读时长
+│   ├── useAutoSave.ts     # 草稿自动保存
+│   ├── usePostNav.ts      # 上一篇/下一篇
+│   ├── useTagCloud.ts     # 标签云
+│   └── useTheme.ts        # 主题状态
 │
-├── pages/                     # 前台 7 页 + 后台 17 页
-│   ├── index.vue              # 首页（文章列表 + 侧边栏）
-│   ├── posts/[slug].vue       # 文章详情（进度条/封面/作者卡/导航）
-│   ├── categories/[name].vue  # 分类页
-│   ├── tags/[name].vue        # 标签页
-│   ├── archive.vue            # 归档页
-│   ├── page/[slug].vue        # 独立页
-│   ├── search.vue             # 搜索结果页
-│   ├── [...404].vue           # 404 页面
-│   └── admin/                 # 后台管理
-│       ├── login.vue           # 登录
-│       ├── setup.vue           # 首次初始化（建管理员后自动关闭）
-│       ├── index.vue           # 仪表盘
-│       ├── profile.vue         # 个人资料
-│       ├── posts/              # 文章管理
-│       │   ├── index.vue       # 文章列表（批量操作）
-│       │   ├── write.vue       # 写文章（草稿自动保存）
-│       │   └── edit-[id].vue   # 编辑文章
-│       ├── categories.vue      # 分类管理
-│       ├── tags.vue            # 标签管理
-│       ├── pages.vue           # 独立页面管理
-│       ├── links.vue           # 友链管理
-│       ├── media.vue           # 附件管理
-│       ├── trash.vue           # 回收站
-│       ├── users.vue           # 用户管理
-│       ├── visits.vue          # 访问记录
-│       └── settings.vue        # 站点设置
+├── pages/                 # 页面（Nuxt 文件路由）
+│   ├── index.vue          # 首页
+│   ├── posts/[slug].vue   # 文章详情
+│   ├── archive.vue        # 归档
+│   ├── links.vue          # 友链页（重导出→插件）
+│   ├── page/[slug].vue    # 独立页面
+│   ├── search.vue         # 搜索结果
+│   ├── [...404].vue       # 404 页
+│   └── admin/             # 后台管理
+│       ├── login.vue
+│       ├── setup.vue
+│       ├── index.vue      # 仪表盘
+│       ├── posts/         # 文章
+│       ├── categories.vue # 分类
+│       ├── tags.vue       # 标签
+│       ├── pages.vue      # 独立页面
+│       ├── plugins.vue    # 插件管理
+│       ├── themes.vue     # 主题管理（自动发现）
+│       ├── comments.vue   # 评论
+│       ├── links.vue      # 友链管理
+│       ├── users.vue      # 用户
+│       ├── media.vue      # 媒体库
+│       ├── trash.vue      # 回收站
+│       └── settings.vue   # 站点设置
 │
 ├── server/
-│   ├── api/                   # 46 个 API 端点
-│   │   ├── auth/              # 登录 / 个人资料 / 改密码
-│   │   ├── posts/             # 文章 CRUD + 软删除 + 恢复 + 批量
-│   │   ├── pages/             # 独立页面 CRUD
-│   │   ├── categories/        # 分类 CRUD
-│   │   ├── tags/              # 标签 CRUD
-│   │   ├── links/             # 友链 CRUD
-│   │   ├── social-links/      # 社交链接
-│   │   ├── users/             # 用户管理
-│   │   ├── attachments/       # 附件管理
-│   │   ├── visits/            # 访问日志
-│   │   ├── upload.post.ts     # 文件上传（魔数校验 + R2/本地）
-│   │   ├── search.get.ts      # 文章搜索
-│   │   ├── stats.get.ts       # 仪表盘统计
-│   │   ├── settings.get.ts    # 站点配置（公开） 
-│   │   ├── settings.put.ts    # 站点配置（管理）
-│   │   ├── setup.post.ts      # 首次初始化
-│   │   ├── visit.post.ts      # 访问记录
-│   │   ├── cover/[slug].get.ts # 自动封面图（SVG 渐变）
-│   │   └── sitemap.xml.ts     # 自动生成 sitemap
-│   ├── utils/                 # 服务端工具
-│   │   ├── auth.ts            # requireAuth 统一认证
-│   │   ├── crypto.ts          # PBKDF2-SHA256 密码哈希
-│   │   ├── jwt.ts             # JWT 签发/验证（HS256，7天过期）
-│   │   ├── db.ts              # D1 数据库获取
-│   │   ├── rate-limit.ts      # 令牌桶速率限制
-│   │   └── sanitize.ts        # 服务端 HTML 消毒
-│   └── plugins/
-│       └── error-handler.ts   # 全局错误 → 中文消息
+│   ├── api/               # API 端点（Nuxt 自动路由）
+│   │   ├── auth/          # 登录/个人资料/改密码
+│   │   ├── posts/         # 文章 CRUD
+│   │   ├── pages/         # 独立页面
+│   │   ├── categories/    # 分类
+│   │   ├── tags/          # 标签
+│   │   ├── links/         # 友链（重导出→插件）
+│   │   ├── comments/      # 评论
+│   │   ├── plugins/       # 插件管理 API
+│   │   ├── users/         # 用户管理
+│   │   ├── setup.post.ts  # 首次初始化（自动建表）
+│   │   ├── upload.post.ts # 文件上传
+│   │   ├── search.get.ts  # 搜索
+│   │   ├── home.get.ts    # 首页聚合 API
+│   │   ├── settings.get.ts / put.ts
+│   │   ├── sitemap.xml.ts
+│   │   └── rss.xml.ts     # RSS（重导出→插件）
+│   └── utils/             # 工具
+│       ├── auth.ts        # requireAuth
+│       ├── crypto.ts      # 密码哈希
+│       ├── jwt.ts         # JWT
+│       ├── db.ts          # D1 连接
+│       ├── db-helpers.ts  # rows<T>() / first<T>()
+│       ├── rate-limit.ts  # 令牌桶
+│       └── sanitize.ts    # HTML 消毒
 │
-├── layouts/
-│   ├── default.vue            # 前台布局
-│   └── admin.vue              # 后台布局
+├── plugins/               # 插件（自包含，自动发现）
+│   ├── registry.ts        # 扫描 plugin.json 自动注册
+│   ├── friend-links/      # 友链插件
+│   │   ├── plugin.json
+│   │   ├── api/           # API 源码
+│   │   └── pages/         # 页面源码
+│   └── rss-feed/          # RSS 插件
+│       ├── plugin.json
+│       └── api/
 │
-├── middleware/
-│   ├── auth.global.ts         # 路由守卫（放行 login/setup）
-│   └── init.global.ts         # 暗黑模式初始化
-│
-├── plugins/                   # 插件目录
-│   └── social-share/          # 社交分享插件（示例）
-│       └── SocialShare.vue
-│
-├── themes/                    # 主题目录
-│   └── halo-style/            # Halo 风格主题（示例）
+├── themes/                # 主题（自包含，自动发现）
+│   ├── saas/              # 紫橙主题
+│   │   ├── theme.json     # {id, name, icon, features}
+│   │   └── layout.vue
+│   └── default/           # 极简主题
 │       ├── theme.json
-│       ├── layout.vue
-│       └── README.md
+│       └── layout.vue
 │
-├── types/index.ts             # 统一类型定义
-├── schema.sql                 # D1 数据库建表（13 张表）
-├── public/robots.txt          # 搜索引擎配置
-├── docs/                      # 文档
-│   ├── deploy.md              # 小白部署指南
-│   └── dev.md                 # 二次开发指南（本文件）
-└── .github/workflows/
-    └── deploy.yml             # GitHub Actions 自动部署
+├── layouts/               # Nuxt 布局（薄包装→themes/）
+│   ├── default.vue        # 主题切换器
+│   ├── saas.vue           # → themes/saas/layout.vue
+│   └── admin.vue          # 后台布局
+│
+├── types/index.ts
+├── docs/                  # 文档
+└── public/                # 静态文件 + _headers
 ```
+
+## 🧩 插件开发
+
+插件系统通过 `import.meta.glob` 自动发现。**新插件不需要改任何共享文件。**
+
+### 目录结构
+
+```
+plugins/my-plugin/
+├── plugin.json          # 元数据（必须）
+│   {
+│     "name": "my-plugin",
+│     "version": "1.0.0",
+│     "description": "...",
+│     "features": ["功能A"],
+│     "builtin": false       ← 内置插件设 true
+│   }
+├── api/                 # API handler（可选）
+│   ├── index.get.ts     # GET /api/xxx
+│   └── index.post.ts    # POST /api/xxx
+├── pages/               # Vue 页面（可选）
+│   └── index.vue
+└── README.md
+```
+
+### 三步开发
+
+```bash
+# 1. 建文件夹 + 写 plugin.json
+mkdir plugins/my-plugin
+
+# 2. 写功能代码
+#    API → plugins/my-plugin/api/
+#    页面 → plugins/my-plugin/pages/
+
+# 3. 在 server/api/ 创建重导出文件（一行）
+echo "export { default } from '~/plugins/my-plugin/api/index.get'" > server/api/my-plugin.get.ts
+```
+
+如果需要启用/禁用开关，在 API 入口加：
+```ts
+import { isPluginEnabled } from '~~/server/utils/plugin-registry'
+if (!isPluginEnabled('my-plugin')) throw createError({ statusCode: 404 })
+```
+
+**不需要**改 `plugins/registry.ts`。系统自动扫描 `plugin.json`。
+
+## 🎨 主题开发
+
+主题系统通过 `import.meta.glob` 自动发现。
+
+### theme.json 字段
+
+```json
+{
+  "id": "my-theme",        // 唯一标识
+  "name": "我的主题",       // 显示名称
+  "version": "1.0.0",
+  "icon": "palette",       // IconShiguang 图标名
+  "description": "...",
+  "features": ["暗黑模式", "响应式"],
+  "colors": { "primary": "#xxx", "background": "#xxx" }
+}
+```
+
+### layout.vue
+
+包含 `<slot />` 用于插入页面内容。以 `themes/default/layout.vue` 为模板修改。
+
+### 三步开发
+
+```bash
+cp -r themes/default themes/my-theme
+# 改 theme.json → 改 layout.vue → 后台自动出现
+```
+
+**不需要**改 `pages/admin/themes.vue`。
 
 ## 关键约定
 
 | 规则 | 说明 |
 |------|------|
-| 中文错误消息 | 所有 API 返回的 `message` 字段用中文 |
-| 认证入口 | `requireAuth(event)` 统一验证，别手动验 token |
-| 速率限制 | 所有写操作 API 必须 `checkRateLimit(key, max, window)` |
-| 输入消毒 | 存入数据库前调用 `sanitize()`，前端 `v-html` 配对 |
-| Token 键名 | 统一 `auth_token`（localStorage 和中间件一致） |
-| 参数化查询 | SQL 用 `?` 占位符 + `.bind()`，禁止字符串拼接 |
-| 密码方案 | PBKDF2-SHA256，600,000 次迭代，16 字节盐 |
+| 中文错误消息 | API 返回的 message 用中文 |
+| 认证入口 | `requireAuth(event)` 统一验证 |
+| 速率限制 | 写操作必须 `checkRateLimit(key, max, window)` |
+| 输入消毒 | 入库前调 `sanitize()` |
+| Token 键名 | `auth_token`（localStorage + 中间件一致） |
+| 参数化查询 | SQL 用 `?` + `.bind()`，禁止字符串拼接 |
 | 禁止项 | `node:fs` / `process.cwd` / `__dirname` / `as any` |
-| 路由冲突 | 同目录禁止 `[id]` 和 `[slug]` 共存，合并为一个文件智能判断 |
 
-## 认证机制
+## 认证与请求
 
 ```ts
-// 管理 API 入口
+// 管理 API
 import { requireAuth } from '~~/server/utils/auth'
-
 const { userId, username, role } = await requireAuth(event)
-// userId: 当前用户 ID
-// role: 'admin' | 'editor' | 'author'
-```
 
-## 速率限制
-
-```ts
+// 速率限制
 import { checkRateLimit } from '~~/server/utils/rate-limit'
+checkRateLimit(`action:${ip}`, 10, 60)
 
-const ip = event.headers.get('x-forwarded-for') || ''
-if (ip) checkRateLimit(`action:${ip}`, 10, 60)  // 每60秒最多10次
+// 前端请求
+const { fetch } = useApi()  // 自动注入 auth_token
 ```
 
-## 前端请求
+## 数据库
 
-```ts
-// 推荐：用 useApi composable（自动注入 auth_token）
-const { fetch, getToken, handleError } = useApi()
-
-// 或者手动
-$fetch('/api/posts', {
-  headers: { Authorization: 'Bearer ' + localStorage.getItem('auth_token') }
-})
-```
-
-## 添加新功能
-
-1. **新功能做成插件** → 在 `plugins/` 下创建目录，放组件和 `plugin.json`
-2. **外观改动** → 创建新主题到 `themes/`，别改默认布局
-3. **新增 API** → 在 `server/api/` 下创建 `.get.ts` / `.post.ts` / `.put.ts` / `.delete.ts`
-4. 写完立刻 `npm run build` 验证
-5. API 命名规则：`index.get.ts` → `GET /api/xxx`，`[id].put.ts` → `PUT /api/xxx/:id`
-
-## 数据库表
-
-详见 `schema.sql`，共 13 张表：
-
-| 表 | 说明 |
-|----|------|
-| users | 用户（PBKDF2 密码 + 角色 + 登录锁定） |
-| posts | 文章（软删除、置顶、封面） |
-| categories | 分类 |
-| tags | 标签 |
-| post_tags | 文章-标签关联 |
-| pages | 独立页面 |
-| links | 友链 |
-| social_links | 社交链接 |
-| attachments | 附件 |
-| site_config | 站点配置（key-value） |
-| notification_logs | 通知日志 |
-| visit_logs | 访问日志（IP、地区、URL） |
-| audit_logs | 操作审计 |
-
-## 部署
-
-推送到 GitHub → GitHub Actions 自动部署到 Cloudflare Pages。详见 `deploy.md`。
+详见 `server/api/setup.post.ts` 中的 `CREATE TABLE` 语句。首次部署访问 `/admin/setup` 自动建表。

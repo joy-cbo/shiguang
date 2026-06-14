@@ -27,13 +27,15 @@
 - 📡 RSS / Sitemap — 自动生成订阅源和站点地图
 - 🔐 用户认证 — 管理员登录、密码修改
 
-**插件系统**（自由选装）
+**插件系统**（自由选装，自动发现）
 - 🔗 友链展示 — 前台友链页 + 后台管理
 - 📡 RSS 订阅 — 标准 RSS 2.0 输出
+- 🧩 安装即用 — 新建 `plugins/你的插件/plugin.json` 即自动注册，不用改任何共享文件
 
-**主题系统**
+**主题系统**（自由切换，自动发现）
 - 🎨 紫橙 SaaS 主题（默认）— 毛玻璃导航 + 渐变系统
 - ⬜ 极简白色主题 — 适合纯文字阅读
+- 🖌️ 安装即用 — 新建 `themes/你的主题/theme.json` + `layout.vue` 即自动出现
 
 ---
 
@@ -77,30 +79,64 @@ npx wrangler pages deploy dist --project-name=你的项目名 --branch=main
 
 ## 🧩 插件开发
 
-```bash
+```
 plugins/
-├── registry.ts          # 插件注册表
-├── friend-links/        # 友链插件
-│   ├── plugin.json      # 插件元数据
-│   └── index.ts         # 插件入口
-└── rss-feed/            # RSS 插件
+├── registry.ts               # 自动发现，不需手改
+├── friend-links/             # 友链插件（自包含）
+│   ├── plugin.json           # 元数据（name/version/features）
+│   ├── api/                  # API handler 源码
+│   │   ├── index.get.ts
+│   │   ├── index.post.ts
+│   │   └── [id].ts
+│   └── pages/
+│       └── links.vue         # 前台页面源码
+└── rss-feed/                 # RSS 插件（自包含）
     ├── plugin.json
-    └── index.ts
+    └── api/
+        └── rss.xml.ts
 ```
 
-参考 `plugins/friend-links/` 写你自己的插件。插件可以包含 API、页面、组件，全部自包含。
+**开发新插件只需三步：**
+
+```bash
+# 1. 建文件夹 + 写 plugin.json
+mkdir plugins/my-plugin
+echo '{"name":"my-plugin","version":"1.0.0","description":"我的插件","features":["功能A"]}' > plugins/my-plugin/plugin.json
+
+# 2. 写 API 和页面代码 → plugins/my-plugin/api/、plugins/my-plugin/pages/
+
+# 3. 在 server/api/ 和 pages/ 创建重导出文件（一行代码）
+```
+
+**不需要改 `plugins/registry.ts`** — 系统自动扫描 `plugin.json` 注册。
 
 ---
 
 ## 🎨 主题开发
 
-```bash
+```
 themes/
-├── saas/theme.json      # 紫橙主题
-└── default/theme.json   # 极简主题
+├── saas/
+│   ├── theme.json       # 元数据（name/id/icon/features）
+│   └── layout.vue       # 完整布局源码
+└── default/
+    ├── theme.json
+    └── layout.vue       # 含暗黑模式切换
 ```
 
-在 `themes/` 下新建文件夹 → 创建 `theme.json` → 在 `layouts/` 下写对应布局文件 → 后台一键切换。
+**开发新主题只需三步：**
+
+```bash
+# 1. 复制一份
+cp -r themes/default themes/my-theme
+
+# 2. 改 theme.json（id、name、icon、features）
+# 3. 改 layout.vue（导航栏、配色、布局）
+```
+
+`theme.json` 中的 `icon` 字段对应 `IconShiguang` 组件的图标名。
+
+**不需要改任何后台页面** — 系统自动扫描 `theme.json` 展示。
 
 ---
 
