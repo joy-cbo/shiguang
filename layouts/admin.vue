@@ -14,6 +14,7 @@
           </NuxtLink>
       </nav>
       <NuxtLink to="/" class="text-xs text-gray-400 hover:text-blue-500 mt-4">← 返回前台</NuxtLink>
+      <button @click="logout" class="text-xs text-red-400 hover:text-red-600 mt-2">退出登录</button>
     </aside>
 
     <!-- 移动端顶部栏 -->
@@ -42,6 +43,7 @@
           </NuxtLink>
         </nav>
         <NuxtLink to="/" class="text-xs text-gray-400 hover:text-blue-500 mt-4 block">← 返回前台</NuxtLink>
+        <button @click="logout(); sidebarOpen = false" class="text-xs text-red-400 hover:text-red-600 mt-2 block">退出登录</button>
       </aside>
     </transition>
 
@@ -56,6 +58,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const sidebarOpen = ref(false)
+const { logout } = useSite()
 
 const menu = [
   { label: '仪表盘', path: '/admin', icon: 'grid' },

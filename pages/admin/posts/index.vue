@@ -35,7 +35,7 @@
             </td>
             <td class="text-gray-500">{{ p.category_name || '-' }}</td>
             <td class="text-gray-500">-</td>
-            <td>{{ p.status === 'published' ? `<IconShiguang name='check' size='16' class='text-green-500 inline'/>` : `<IconShiguang name='edit' size='16' class='text-yellow-500 inline'/>` }}</td>
+            <td><IconShiguang v-if="p.status === 'published'" name="check" size="16" class="text-green-500 inline"/><IconShiguang v-else name="edit" size="16" class="text-yellow-500 inline"/></td>
             <td class="text-gray-400">{{ formatDate(p.created_at) }}</td>
             <td class="space-x-1">
               <NuxtLink :to="`/admin/posts/edit-${p.id}`" class="text-blue-500 text-xs">编辑</NuxtLink>

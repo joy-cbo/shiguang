@@ -1,5 +1,11 @@
 // GET /api/rss.xml — RSS 2.0 订阅
+import { isPluginEnabled } from '~~/server/utils/plugin-registry'
+
 export default defineEventHandler(async (event) => {
+  if (!isPluginEnabled('rss-feed')) {
+    throw createError({ statusCode: 404, message: 'RSS 订阅未启用' })
+  }
+
   const db = getDB(event)
 
   // 站点信息
