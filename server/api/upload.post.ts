@@ -33,8 +33,11 @@ export default defineEventHandler(async (event) => {
   const newName = `${crypto.randomUUID()}.${ext}`
 
   // R2 存储
-  const r2 = (event.context as any)?.cloudflare?.env?.R2
-  if (!r2) throw createError({ statusCode: 500, message: '文件存储服务暂不可用' })
+  const ctx2 = (event.context as any)?.cloudflare || (event.context as any)?.cf || {}
+  const platform2 = (globalThis as any).__env__ || (globalThis as any).env || {}
+  const env2 = { ...platform2, ...(ctx2?.env || {}) }
+  const r2 = env2['shiguang-files']
+  if (!r2) throw createError({ statusCode: 500, statusMessage: 'R2 未绑定，请在 Cloudflare 后台将 R2 绑定的变量名设为 shiguang-files', message: '文件存储服务暂不可用' })
   await r2.put(newName, file.data, { httpMetadata: { contentType: file.type || '' } })
 
   return { url: `/uploads/${newName}`, filename: file.filename }
