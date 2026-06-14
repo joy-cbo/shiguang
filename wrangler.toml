@@ -1,7 +1,0 @@
-# Cloudflare Pages 配置
-# D1 和 R2 绑定在 Cloudflare 后台 → 设置 → 绑定 中添加
-# 详细步骤见 docs/deploy.md
-
-name = "shiguang"
-compatibility_date = "2025-05-15"
-pages_build_output_dir = "dist"
