@@ -70,7 +70,7 @@ blog/
 │   ├── utils/               # 工具函数
 │   │   ├── auth.ts              # requireAuth() 统一认证入口
 │   │   ├── jwt.ts               # JWT HS256 签发与验证
-│   │   ├── crypto.ts            # PBKDF2-SHA256 密码哈希（10,000 迭代）
+│   │   ├── crypto.ts            # 密码哈希
 │   │   ├── db.ts                # getDB() 数据库实例获取
 │   │   ├── db-helpers.ts        # rows<T>() / first<T>() 类型安全包装
 │   │   ├── rate-limit.ts        # 令牌桶速率限制
@@ -97,7 +97,7 @@ blog/
 
 | 表 | 用途 | 关键字段 |
 |----|------|----------|
-| `users` | 用户 | username, password_hash(PBKDF2), role(admin/author), status, login_attempts, locked_until |
+| `users` | 用户 | username, password_hash, role(admin/author), status |
 | `posts` | 文章 | title, slug, content(HTML), excerpt, cover(R2 URL), status(published/draft/deleted), is_pinned, publish_at, category_id, author_id, deleted_at(软删除) |
 | `categories` | 分类 | name, slug |
 | `tags` | 标签 | name, slug |
@@ -153,7 +153,7 @@ blog/
 | 端点 | 方法 | 说明 |
 |------|------|------|
 | `/api/setup` | POST | 初始化管理员（仅当 users 表为空） |
-| `/api/auth/login` | POST | 登录，9 次失败锁定 15 分钟 |
+| `/api/auth/login` | POST | 登录，多次失败后自动锁定 |
 | `/api/auth/me` | GET | 获取当前用户信息 |
 | `/api/auth/password` | PUT | 修改密码（需旧密码） |
 | `/api/auth/profile` | PUT | 更新个人资料 |
@@ -437,18 +437,17 @@ layouts/default.vue → 判断 activeTheme
 
 ### 7.1 认证
 
-- **密码**：PBKDF2-SHA256，salt 16 字节，迭代 10,000 次（CLI 环境）或 1,000 次（D1 环境，避免 CPU 超限）
-- **Token**：JWT HS256，7 天过期，存 localStorage `auth_token`
-- **锁定**：9 次登录失败 → `locked_until` 15 分钟
+- **密码**：自适应迭代哈希，盐值随机生成
+- **Token**：JWT，存在 localStorage
+- **锁定**：多次登录失败后自动锁定
 
 ### 7.2 防护层
 
-1. **速率限制**：令牌桶算法，每个写操作 10 次/60 秒
-2. **输入消毒**：`sanitize()` 覆盖 10+ 种 XSS 向量（事件处理器 / data: URI / javascript: URI / SVG / MathML）
-3. **参数化查询**：所有 SQL 用 `?` + `.bind()`，禁止字符串拼接
+1. **速率限制**：令牌桶算法
+2. **输入消毒**：覆盖多种 XSS 向量
+3. **参数化查询**：所有 SQL 用占位符，禁止字符串拼接
 4. **软删除**：文章不真删，防误操作
-5. **操作审计**：所有管理操作记入 `audit_logs`
-6. **CSRF**：无 Cookie，天然不受 CSRF 攻击（纯 Bearer Token）
+5. **CSRF**：无 Cookie，天然不受 CSRF 攻击
 
 ### 7.3 不做的
 
