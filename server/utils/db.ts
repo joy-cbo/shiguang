@@ -6,15 +6,8 @@ export function getDB(event: any): D1Database {
   const platform = (globalThis as any).__env__ || (globalThis as any).env || {}
   const env = { ...platform, ...(ctx?.env || {}) }
 
-  // 按优先级匹配：DB > blog-db > shiguang-db
-  const candidates = ['DB', 'blog-db', 'shiguang-db']
-  let db: D1Database | undefined
-  for (const name of candidates) {
-    if (env[name] && typeof (env[name] as any).exec === 'function') {
-      db = env[name] as D1Database
-      break
-    }
-  }
+  // 只匹配 shiguang-db
+  const db = env['shiguang-db'] as D1Database | undefined
 
   if (!db) {
     // 列出所有绑定，帮用户排查
