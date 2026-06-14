@@ -83,9 +83,9 @@
 
 1. 进入 Pages 项目 → 点 **设置** → **绑定**
 2. 点 **添加**：
-   - 类型选 **D1 数据库** → 变量名填 `DB` → 选 `shiguang-db`
+   - 类型选 **D1 数据库** → 变量名填 `shiguang-db` → 选 `shiguang-db`
 3. 再点 **添加**：
-   - 类型选 **R2 存储桶** → 变量名填 `R2` → 选 `shiguang-files`
+   - 类型选 **R2 存储桶** → 变量名填 `shiguang-files` → 选 `shiguang-files`
 
 ---
 

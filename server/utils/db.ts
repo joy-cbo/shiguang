@@ -14,7 +14,7 @@ export function getDB(event: any): D1Database {
     const allNames = Object.keys(env).join(', ') || '(空)'
     throw createError({
       statusCode: 500,
-      statusMessage: `D1 未找到。当前绑定: [${allNames}]。请将 D1 绑定的变量名设为 'DB'`,
+      statusMessage: `D1 未找到。当前绑定: [${allNames}]。请将 D1 绑定的变量名设为 'shiguang-db'`,
       message: '数据库未绑定'
     })
   }

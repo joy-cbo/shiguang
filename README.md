@@ -50,23 +50,16 @@
 ## 🚀 一键部署
 
 ```bash
-# 1. 下载代码
 git clone https://github.com/joy-cbo/shiguang.git
 cd shiguang
-
-# 2. 安装依赖
 npm install
-
-# 3. 构建
 npm run build
-
-# 4. 部署到 Cloudflare Pages
 npx wrangler pages deploy dist --project-name=你的项目名 --branch=main
 ```
 
 然后浏览器打开 `https://你的域名/admin/setup` → 创建管理员账号 → **博客上线！**
 
-> 数据库会在首次访问 /admin/setup 时自动建表，不需要手动操作。
+> ⚠️ 部署后需要在 Cloudflare 后台绑定 D1（变量名 `shiguang-db`）和 R2（变量名 `shiguang-files`），详见 [部署指南](docs/deploy.md)。数据库会在首次访问 /admin/setup 时自动建表。
 
 ---
 
