@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
 
   // 站点信息
   const siteUrlRow = await db.prepare("SELECT value FROM site_config WHERE key = 'site_url'").first() as { value: string } | null
-  const siteUrl = (siteUrlRow?.value || 'https://openxiaobai.work').replace(/\/$/, '')
+  const siteUrl = (siteUrlRow?.value || '').replace(/\/$/, '')
   const siteInfo = await db.prepare("SELECT value FROM site_config WHERE key = 'site_title'").first() as { value: string } | null
   const siteTitle = siteInfo?.value || '拾光博客'
   const siteDesc = (await db.prepare("SELECT value FROM site_config WHERE key = 'site_description'").first() as { value: string } | null)?.value || '拾起时光碎片'

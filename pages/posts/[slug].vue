@@ -9,12 +9,12 @@
       <Breadcrumb :items="breadcrumbs" />
 
       <!-- 封面图 -->
-      <img :src="post.cover || `https://pub-d6a15f179b6d4df7a50be07bf036063d.r2.dev/cover/${post.slug}.svg`" :alt="post.title" loading="lazy" class="w-full h-48 sm:h-64 object-cover rounded-xl mb-6 bg-gray-200 dark:bg-gray-700" />
+      <img :src="post.cover || ''" :alt="post.title" loading="lazy" class="w-full h-48 sm:h-64 object-cover rounded-xl mb-6 bg-gray-200 dark:bg-gray-700" />
 
       <h1 class="text-2xl md:text-3xl font-bold mb-3">{{ post.title }}</h1>
       <p class="text-sm text-gray-500 mb-6 flex items-center gap-2 flex-wrap">
         <img v-if="post.author_avatar" :src="post.author_avatar" class="w-5 h-5 rounded-full" />
-        <NuxtLink v-if="post.author_id" :to="`/author/${post.author_id}`" class="hover:text-purple-600">{{ post.author_nickname || '匿名' }}</NuxtLink>
+        <NuxtLink v-if="post.author_id" to="/about" class="hover:text-purple-600">{{ post.author_nickname || '匿名' }}</NuxtLink>
         <span>·</span>
         <span>{{ formatDate(post.created_at) }}</span>
         <span>·</span>
@@ -42,20 +42,14 @@
         </aside>
       </div>
 
-      <!-- 文章系列 -->
-      <div v-if="post.series" :class="'mb-8 p-4 bg-purple-50 rounded-lg border border-purple-100'" class>
-        <p :class="'text-xs text-purple-500 mb-2'" class><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> 本系列</p>
-        <NuxtLink :to="`/series/${post.series.slug}`" :class="'font-semibold text-purple-600 hover:underline'" class>{{ post.series.name }}</NuxtLink>
-      </div>
-
-      <!-- 作者卡片 -->
+      <!-- 正文 -->
       <div class="border-t dark:border-gray-700 pt-6 mt-6 mb-8">
         <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-xl">
             {{ (post.author_nickname || '匿')[0] }}
           </div>
           <div>
-            <NuxtLink :to="`/author/${post.author_id}`" class="font-semibold hover:text-purple-600">{{ post.author_nickname || '匿名' }}</NuxtLink>
+            <span class="font-semibold">{{ post.author_nickname || '匿名' }}</span>
             <p class="text-xs text-gray-500">{{ post.author_nickname ? '博客作者' : '' }}</p>
           </div>
         </div>
@@ -156,7 +150,7 @@ const articleHead = computed(() => {
   const p = post.value
   if (!p) return { title: '加载中... - 拾光博客' }
   const desc = p.excerpt || p.content?.replace(/<[^>]*>/g, '').slice(0, 160) || ''
-  const cover = p.cover || `https://pub-d6a15f179b6d4df7a50be07bf036063d.r2.dev/cover/${slug}.svg`
+  const cover = p.cover || ''
   return {
     title: p.title,
     meta: [
@@ -165,7 +159,7 @@ const articleHead = computed(() => {
       { property: 'og:description', content: desc },
       { property: 'og:type', content: 'article' },
       { property: 'og:image', content: cover },
-      { property: 'og:url', content: `https://openxiaobai.work/posts/${slug}` },
+      { property: 'og:url', content: `/posts/${slug}` },
       { property: 'article:published_time', content: toISO8601(p.created_at) },
       { property: 'article:author', content: p.author_nickname || '拾光' },
       { name: 'twitter:card', content: 'summary_large_image' },

@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
   // 使用 site_url 配置，不信任 Host 头
   const siteUrlRow = await db.prepare("SELECT value FROM site_config WHERE key = 'site_url'").first() as { value: string } | null
-  const siteUrl = (siteUrlRow?.value || 'https://openxiaobai.work').replace(/\/$/, '')
+  const siteUrl = (siteUrlRow?.value || '').replace(/\/$/, '')
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   xml += `  <url><loc>${siteUrl}</loc><priority>1.0</priority></url>\n`

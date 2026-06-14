@@ -1,6 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#f8f9fc] relative">
-    <CatDecorations />
+  <div class="min-h-screen bg-[#f8f9fc]">
     <nav class="sticky top-0 z-50 backdrop-blur-xl bg-white/72 border-b border-gray-100/50">
       <div class="h-0.5 gradient-bg"></div>
       <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -34,8 +33,8 @@
 
 <script setup lang="ts">
 const {
-  siteTitle, siteSubtitle, footerInfo, siteLogo, headerDisplay,
-  socialLinks, isLoggedIn, menuOpen,
+  siteTitle, siteLogo, headerDisplay,
+  isLoggedIn, menuOpen,
   fetchSettings, logout,
 } = useSite()
 

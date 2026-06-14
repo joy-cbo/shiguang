@@ -34,7 +34,7 @@
               <span v-if="p.is_pinned" class="text-orange-500 mr-1" title="置顶">📌</span>{{ p.title }}
             </td>
             <td class="text-gray-500">{{ p.category_name || '-' }}</td>
-            <td class="text-gray-500">{{ p.series_name || '-' }}</td>
+            <td class="text-gray-500">-</td>
             <td>{{ p.status === 'published' ? '✅' : '📝' }}</td>
             <td class="text-gray-400">{{ formatDate(p.created_at) }}</td>
             <td class="space-x-1">

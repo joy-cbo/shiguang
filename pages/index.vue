@@ -2,7 +2,7 @@
   <NuxtLayout name="default">
     <!-- ===== 加载动画：Logo 唱片旋转 ===== -->
     <div v-if="showLoading" class="flex flex-col items-center justify-center py-20">
-      <img src="https://pub-d6a15f179b6d4df7a50be07bf036063d.r2.dev/logo-spin.svg" alt="加载中" class="w-40 h-36" />
+      <img src="/logo-spin.svg" alt="加载中" class="w-40 h-36" />
     </div>
 
     <!-- ===== 内容区（加载完成后显示） ===== -->
@@ -103,8 +103,7 @@ const heroPost = ref<any>(null)
 const gridPosts = ref<any[]>([])
 const recentPosts = ref<Array<{ id: number; title: string; slug: string; created_at: string }>>([])
 
-const COVER_BASE = 'https://pub-d6a15f179b6d4df7a50be07bf036063d.r2.dev/cover/'
-function getCoverUrl(slug?: string) { return COVER_BASE + (slug || 'default') + '.svg' }
+function getCoverUrl(slug?: string) { return '' }
 
 function tagSizeClass(count: number) {
   if (count >= 10) return 'text-sm font-bold'

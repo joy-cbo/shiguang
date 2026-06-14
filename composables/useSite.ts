@@ -1,7 +1,4 @@
-// 共享站点状态 — 替代 saas.vue / default.vue 中重复的 70% script 逻辑
-import type { Ref } from 'vue'
-
-interface SocialLink { id: number; platform: string; url: string; visible?: number }
+// 共享站点状态 — 替代 saas.vue / default.vue 中重复的 script 逻辑
 
 const SITE_DEFAULTS = {
   siteTitle: '拾光',
@@ -19,7 +16,6 @@ export function useSite() {
   const siteLogo = useState('site:logo', () => SITE_DEFAULTS.siteLogo)
   const siteFavicon = useState('site:favicon', () => SITE_DEFAULTS.siteFavicon)
   const headerDisplay = useState('site:header', () => SITE_DEFAULTS.headerDisplay)
-  const socialLinks = useState<SocialLink[]>('site:social', () => [])
   const isLoggedIn = useState('site:loggedIn', () => false)
   const menuOpen = useState('site:menuOpen', () => false)
   const loaded = useState('site:loaded', () => false)
@@ -44,12 +40,7 @@ export function useSite() {
       if (s.site_favicon) {
         useHead({ link: [{ rel: 'icon', type: 'image/svg+xml', href: s.site_favicon }] })
       }
-    } catch (e) { console.error('[站点设置] 主设置加载失败:', e) }
-
-    try {
-      const sl = await $fetch<{ socialLinks: SocialLink[] }>('/api/social-links')
-      socialLinks.value = (sl.socialLinks || []).filter((l: SocialLink) => l.visible !== 0)
-    } catch (e) { console.error('[站点设置] 社交链接加载失败:', e) }
+    } catch (e) { console.error('[站点设置] 加载失败:', e) }
   }
 
   function logout() {
@@ -61,7 +52,7 @@ export function useSite() {
 
   return {
     siteTitle, siteSubtitle, footerInfo, siteLogo, siteFavicon, headerDisplay,
-    socialLinks, isLoggedIn, menuOpen, loaded,
+    isLoggedIn, menuOpen, loaded,
     fetchSettings, logout,
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { footerInfo, siteSubtitle, socialLinks } = useSite()
+const { footerInfo, siteSubtitle } = useSite()
 </script>
 
 <template>
@@ -13,9 +13,6 @@ const { footerInfo, siteSubtitle, socialLinks } = useSite()
       </div>
       <div class="text-center">
         <p v-if="siteSubtitle" class="text-gray-500 mb-1 italic">「{{ siteSubtitle }}」</p>
-        <div v-if="socialLinks.length" class="flex justify-center gap-3 mb-1">
-          <a v-for="sl in socialLinks" :key="sl.id" :href="sl.url" target="_blank" rel="noopener" class="hover:text-purple-500">{{ sl.platform }}</a>
-        </div>
         <p>{{ footerInfo || '© 2026 拾光博客 · 不忘初心，拾起时光' }}</p>
       </div>
     </div>

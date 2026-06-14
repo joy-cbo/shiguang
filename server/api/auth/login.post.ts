@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   // 检查锁定
   if (user.locked_until && new Date(user.locked_until) > new Date()) {
     const remain = Math.ceil((new Date(user.locked_until).getTime() - Date.now()) / 60000)
-    throw createError({ statusCode: 429, message: `账户已锁定，请 ${remain} 分钟后再试。如果这是你的账户，可通过邮箱解锁：POST /api/auth/unlock` })
+    throw createError({ statusCode: 429, message: `账户已锁定，请 ${remain} 分钟后再试` })
   }
 
   if (user.status !== 'active') {

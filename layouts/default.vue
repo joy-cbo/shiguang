@@ -1,8 +1,7 @@
 <template>
   <SaasLayout v-if="activeTheme === 'saas'"><slot /></SaasLayout>
 
-  <div v-else class="min-h-screen bg-gray-50 dark:bg-gray-900 relative">
-    <CatDecorations />
+  <div v-else class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 sticky top-0 z-50">
       <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         <NuxtLink to="/" class="text-xl font-bold shrink-0 flex items-center gap-2">
@@ -37,9 +36,6 @@
         <NavLinks mode="footer" />
       </div>
       <p v-if="siteSubtitle" class="text-gray-500 mb-2 italic">「{{ siteSubtitle }}」</p>
-      <div v-if="socialLinks.length" class="flex justify-center gap-4 mb-3">
-        <a v-for="sl in socialLinks" :key="sl.id" :href="sl.url" target="_blank" rel="noopener" class="hover:text-purple-600 transition-colors">{{ sl.platform }}</a>
-      </div>
       <p v-if="footerInfo">{{ footerInfo }}</p>
     </footer>
   </div>
@@ -51,14 +47,13 @@ import SaasLayout from '~/layouts/saas.vue'
 
 const {
   siteTitle, siteSubtitle, footerInfo, siteLogo, headerDisplay,
-  socialLinks, isLoggedIn, menuOpen,
+  isLoggedIn, menuOpen,
   fetchSettings, logout,
 } = useSite()
 
 const { activeTheme } = useTheme()
 activeTheme.value = 'saas'
 
-// 暗黑模式 — default 主题独有
 const isDark = ref(false)
 function toggleDark() {
   isDark.value = !isDark.value
@@ -68,7 +63,6 @@ function toggleDark() {
 
 onMounted(async () => {
   await fetchSettings()
-  // 暗黑模式初始化
   const stored = localStorage.getItem('dark_mode')
   if (stored === 'true' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     isDark.value = true; document.documentElement.classList.add('dark')

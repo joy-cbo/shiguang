@@ -1,4 +1,4 @@
-// POST /api/upload — 文件上传（魔数校验，R2优先/本地回退）
+// POST /api/upload — 文件上传到 R2
 import { requireAuth } from '~~/server/utils/auth'
 import { checkRateLimit } from '~~/server/utils/rate-limit'
 
@@ -31,20 +31,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const newName = `${crypto.randomUUID()}.${ext}`
-  let url = ''
 
-  // R2 存储（Cloudflare Pages 环境唯一方式）
+  // R2 存储
   const r2 = (event.context as any)?.cloudflare?.env?.R2
   if (!r2) throw createError({ statusCode: 500, message: '文件存储服务暂不可用' })
   await r2.put(newName, file.data, { httpMetadata: { contentType: file.type || '' } })
-  url = `/uploads/${newName}`
 
-  const db = getDB(event)
-  const mime = file.type || ''
-  const category = mime.startsWith('video') ? 'video' : 'image'
-  const result = await db.prepare(
-    'INSERT INTO attachments (filename, url, size, type, category) VALUES (?, ?, ?, ?, ?)'
-  ).bind(file.filename, url, file.data.length, mime, category).run()
-
-  return { url, id: result.meta?.last_row_id, filename: file.filename }
+  return { url: `/uploads/${newName}`, filename: file.filename }
 })

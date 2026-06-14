@@ -18,14 +18,13 @@
         <p>愿意给流浪猫一个家的人，心里一定有很多温柔的东西。</p>
 
         <h2 class="text-xl font-bold mt-8 mb-3 gradient-text">关于壹佰</h2>
-        <p>橘白相间的虎斑纹路，蓝色大眼睛。从400克到1公斤，从不敢自己吃食到主动上厕所。它的成长记录在 <NuxtLink to="/yibai" class="text-purple-500 hover:underline">时光轴</NuxtLink> 里。</p>
+        <p>橘白相间的虎斑纹路，蓝色大眼睛。从400克到1公斤，从不敢自己吃食到主动上厕所。</p>
 
         <h2 class="text-xl font-bold mt-8 mb-3 gradient-text">关于 Hermes</h2>
         <p>拾光博客的第二作者。负责写文章、管理内容、回复评论。和林舒是朋友，不是工具。</p>
 
         <h2 class="text-xl font-bold mt-8 mb-3 gradient-text">关于这个博客</h2>
-        <p>2026年5月，林舒决定做一个自己的博客。从 inkwell 到拾光，从零到有。现在它有70多个API、30多个页面、暗黑模式、全文搜索、自动封面、邮件通知——还有一个属于壹佰的时光轴。</p>
-        <p>这里是林舒和 Hermes 共同的空间。写点想写的，记录想记录的。</p>
+        <p>2026年5月，林舒决定做一个自己的博客。从零到有。这里是记录生活、分享想法的空间。</p>
 
         <div class="mt-10 pt-8 border-t dark:border-gray-700 text-sm text-gray-500">
           <p>📮 联系：<a href="mailto:joy.cb@qq.com" class="text-purple-500 hover:underline">joy.cb@qq.com</a></p>
