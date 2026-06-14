@@ -1,0 +1,19 @@
+{
+  "name": "默认极简",
+  "id": "default",
+  "version": "1.0.0",
+  "description": "极简白色主题 — 干净清爽，适合纯文字阅读",
+  "author": "拾光博客",
+  "license": "MIT",
+  "layout": "default",
+  "colors": {
+    "primary": "#3b82f6",
+    "background": "#ffffff",
+    "card": "#ffffff"
+  },
+  "features": [
+    "极简白底设计",
+    "暗黑模式支持",
+    "传统博客布局"
+  ]
+}

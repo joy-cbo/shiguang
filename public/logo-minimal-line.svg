@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="400" height="240">
+  <defs>
+    <!-- 暖棕唱片色 -->
+    <style>
+      .record { fill: none; stroke: #8B6914; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .record-fill { fill: #8B6914; stroke: none; }
+      .notebook { fill: none; stroke: #C5A035; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .notebook-rule { fill: none; stroke: #D4B050; stroke-width: 0.8; stroke-linecap: round; opacity: 0.5; }
+      .text-line { fill: #8B7355; stroke: none; font-family: 'KaiTi','STKaiti','楷体',serif; }
+    </style>
+  </defs>
+
+  <!-- ===== 左侧：黑胶唱片（暖棕线条） ===== -->
+  <g transform="translate(120, 120)">
+    <!-- 外圈 -->
+    <circle cx="0" cy="0" r="75" class="record"/>
+    <!-- 沟槽弧线 1 -->
+    <path d="M -62,-42 A 75,75 0 0,1 62,-42" class="record" stroke-width="1.5"/>
+    <!-- 沟槽弧线 2 -->
+    <path d="M -55,-50 A 75,75 0 0,1 55,-50" class="record" stroke-width="1.2"/>
+    <!-- 沟槽弧线 3 -->
+    <path d="M -48,-57 A 75,75 0 0,1 48,-57" class="record" stroke-width="1"/>
+    <!-- 内圈 -->
+    <circle cx="0" cy="0" r="28" class="record" stroke-width="1.5"/>
+    <!-- 标签圈 -->
+    <circle cx="0" cy="0" r="18" class="record" stroke-width="1"/>
+    <!-- 中心圆孔 -->
+    <circle cx="0" cy="0" r="4" class="record-fill"/>
+    <!-- 唱片反光弧线 -->
+    <path d="M -50,-56 A 75,75 0 0,1 -30,-69" class="record" stroke-width="0.6" opacity="0.4"/>
+  </g>
+
+  <!-- ===== 右侧：翻开的笔记本（金色线条） ===== -->
+  <g transform="translate(285, 115)">
+    <!-- 书脊 -->
+    <line x1="-60" y1="-60" x2="-60" y2="60" class="notebook" stroke-width="1.5"/>
+    
+    <!-- 左页 -->
+    <path d="M -58,-58 L -58,58 L 0,65 L 0,-65 Z" class="notebook"/>
+    <!-- 右页 -->
+    <path d="M 2,-65 L 2,65 L 58,58 L 58,-58 Z" class="notebook"/>
+    
+    <!-- 左页横线 -->
+    <line x1="-52" y1="-40" x2="-4" y2="-43" class="notebook-rule"/>
+    <line x1="-52" y1="-25" x2="-4" y2="-28" class="notebook-rule"/>
+    <line x1="-52" y1="-10" x2="-4" y2="-13" class="notebook-rule"/>
+    <line x1="-52" y1="5" x2="-4" y2="2" class="notebook-rule"/>
+    <line x1="-52" y1="20" x2="-4" y2="17" class="notebook-rule"/>
+    <line x1="-52" y1="35" x2="-4" y2="32" class="notebook-rule"/>
+    
+    <!-- 右页横线 -->
+    <line x1="4" y1="-43" x2="52" y2="-40" class="notebook-rule"/>
+    <line x1="4" y1="-28" x2="52" y2="-25" class="notebook-rule"/>
+    <line x1="4" y1="-13" x2="52" y2="-10" class="notebook-rule"/>
+    <line x1="4" y1="2" x2="52" y2="5" class="notebook-rule"/>
+    <line x1="4" y1="17" x2="52" y2="20" class="notebook-rule"/>
+    <line x1="4" y1="32" x2="52" y2="35" class="notebook-rule"/>
+
+    <!-- 书签绳 -->
+    <path d="M -58,0 C -70,5 -65,25 -58,20" class="notebook" stroke-width="1" opacity="0.6"/>
+  </g>
+
+  <!-- ===== 底部文字"拾光" ===== -->
+  <text x="200" y="215" text-anchor="middle" font-family="Georgia, KaiTi, STKaiti, 楷体, serif" font-size="28" fill="#8B7355" letter-spacing="4">shiguang</text>
+
+  <!-- 装饰性小元素：音符 -->
+  <g transform="translate(60, 170)" class="record" opacity="0.5">
+    <circle cx="0" cy="0" r="3" class="record-fill" opacity="0.5"/>
+    <line x1="3" y1="0" x2="3" y2="-20" stroke-width="1.5"/>
+    <path d="M 3,-20 C 8,-18 10,-12 8,-8" fill="none" stroke-width="1.5"/>
+  </g>
+</svg>

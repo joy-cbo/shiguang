@@ -1,0 +1,13 @@
+{
+  "name": "friend-links",
+  "version": "1.0.0",
+  "description": "友链展示插件 — 前台友链页 + 后台友链管理",
+  "author": "拾光博客",
+  "license": "MIT",
+  "features": [
+    "前台友链展示页 (/links)",
+    "后台友链管理 (增删改排序)",
+    "友链 Logo 展示"
+  ],
+  "requires": []
+}

@@ -1,0 +1,13 @@
+{
+  "name": "rss-feed",
+  "version": "1.0.0",
+  "description": "RSS 2.0 订阅源插件",
+  "author": "拾光博客",
+  "license": "MIT",
+  "features": [
+    "RSS 2.0 标准订阅 (/api/rss.xml)",
+    "自动包含最近 20 篇文章",
+    "全文输出"
+  ],
+  "requires": []
+}

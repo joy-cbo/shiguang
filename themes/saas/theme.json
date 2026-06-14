@@ -1,0 +1,22 @@
+{
+  "name": "SaaS 紫橙",
+  "id": "saas",
+  "version": "1.0.0",
+  "description": "轻科技 SaaS 风格 — 毛玻璃导航 + 紫橙渐变 + 浅灰白背景 + 猫元素装饰",
+  "author": "拾光博客",
+  "license": "MIT",
+  "layout": "saas",
+  "colors": {
+    "primary": "#9333ea",
+    "accent": "#f97316",
+    "background": "#f8f9fc",
+    "card": "#ffffff"
+  },
+  "features": [
+    "毛玻璃导航栏",
+    "紫橙渐变系统",
+    "猫头猫爪随机装饰",
+    "暗黑模式支持",
+    "渐进式首页加载"
+  ]
+}

@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 紫橙渐变文字 — 全站统一调用 */
+.gradient-text {
+  background: linear-gradient(to right, #9333ea, #ea580c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 紫橙渐变背景 — 全站统一调用 */
+.gradient-bg {
+  background: linear-gradient(to right, #9333ea, #ea580c);
+}

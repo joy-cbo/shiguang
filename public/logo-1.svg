@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B"/>
+      <stop offset="100%" style="stop-color:#EA580C"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FCD34D"/>
+      <stop offset="100%" style="stop-color:#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <!-- 光碎片几何图形 -->
+  <polygon points="70,30 85,20 85,50 70,60" fill="url(#g1)" opacity="0.9">
+    <animateTransform attributeName="transform" type="rotate" from="0 75 40" to="360 75 40" dur="20s" repeatCount="indefinite"/>
+  </polygon>
+  <polygon points="55,35 60,15 75,25 65,50" fill="url(#g2)" opacity="0.7"/>
+  <polygon points="85,25 100,15 95,45 80,50" fill="url(#g1)" opacity="0.8"/>
+  <polygon points="60,50 70,55 65,75 55,70" fill="url(#g2)" opacity="0.6"/>
+  <polygon points="80,55 95,65 85,80 70,70" fill="url(#g1)" opacity="0.7"/>
+  <circle cx="72" cy="42" r="8" fill="#FFF" opacity="0.9"/>
+  <!-- 文字 -->
+  <text x="130" y="72" font-family="'PingFang SC','Noto Sans SC',sans-serif" font-size="52" font-weight="800" fill="#1F2937" letter-spacing="4">拾光</text>
+  <text x="130" y="98" font-family="'PingFang SC','Noto Sans SC',sans-serif" font-size="14" fill="#9CA3AF" letter-spacing="6">PICKING UP LIGHT</text>
+</svg>

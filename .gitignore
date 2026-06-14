@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+.nuxt/
+dist/
+
+# Env
+.env
+.dev.vars
+
+# IDE
+.idea/
+.vscode/
+
+# Wrangler
+.wrangler/
+
+# OS
+.DS_Store
+Thumbs.db
