@@ -21,6 +21,7 @@ const username = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
+const { isLoggedIn } = useSite()
 
 async function doLogin() {
   loading.value = true
@@ -28,6 +29,7 @@ async function doLogin() {
   try {
     const data = await $fetch<{ token: string }>('/api/auth/login', { method: 'POST', body: { username: username.value, password: password.value } })
     localStorage.setItem('auth_token', data.token)
+    isLoggedIn.value = true  // 更新全局登录状态
     navigateTo('/admin')
   } catch (e: any) {
     error.value = e?.data?.message || '登录失败'

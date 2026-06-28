@@ -63,7 +63,7 @@ interface ThemeJson {
 }
 
 // 自动发现 themes/*/theme.json — 第三方加主题不用改此文件
-const themeModules = import.meta.glob<{ default: ThemeJson }>('/themes/*/theme.json', { eager: true })
+const themeModules = import.meta.glob<{ default: ThemeJson }>('~/themes/*/theme.json', { eager: true })
 const themes = Object.entries(themeModules).map(([path, m]) => m.default)
 
 const activeTheme = ref('default')
@@ -90,6 +90,9 @@ async function switchTheme(themeId: string) {
     })
     activeTheme.value = themeId
     localStorage.setItem('active_theme', themeId)
+    // 更新全局主题状态，前台立即生效
+    const { activeTheme: globalTheme } = useTheme()
+    globalTheme.value = themeId
     switchMsg.value = '主题已切换！刷新前台页面即可看到效果'
     switchError.value = false
     setTimeout(() => { switchMsg.value = '' }, 5000)
