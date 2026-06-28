@@ -5,7 +5,7 @@ import { checkRateLimit } from '~~/engine/utils/rate-limit'
 
 export default defineEventHandler(async (event) => {
   const ip = event.headers.get('x-forwarded-for') || event.headers.get('x-real-ip') || ''
-  if (ip) checkRateLimit(`login:${ip}`, 5, 60)
+  if (ip) await checkRateLimit(`login:${ip}`, 5, 60, event)
 
   const { username, password } = await readBody(event) as { username?: string; password?: string }
   if (!username || !password) {
@@ -51,8 +51,18 @@ export default defineEventHandler(async (event) => {
   }
 
   const token = await createToken({ userId: user.id, username: user.username, role: user.role })
+  
+  // 设置 httpOnly cookie（更安全，防止 XSS 窃取 token）
+  setCookie(event, 'auth_token', token, {
+    httpOnly: true,      // JavaScript 无法访问
+    secure: true,        // 仅 HTTPS 传输
+    sameSite: 'lax',     // CSRF 防护
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7  // 7 天过期
+  })
+
   return {
-    token,
+    token,  // 仍然返回 token，兼容旧客户端
     user: { id: user.id, username: user.username, role: user.role },
   }
 })

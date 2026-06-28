@@ -104,7 +104,7 @@
 
 <script setup lang="ts">
 import { marked } from 'marked'
-import DOMPurify from 'dompurify'
+import { sanitizeHtml } from '~/composables/useSanitize'
 import type { Post } from '~/types'
 
 const route = useRoute()
@@ -122,10 +122,8 @@ const post = computed(() => data.value?.post || null)
 
 const renderedContent = computed(() => {
   if (!post.value?.content) return ''
-  const html = marked(post.value.content)
-  // DOMPurify 需要浏览器 DOM，SSR 时跳过（客户端 hydration 后会重新 purify）
-  if (typeof window === 'undefined') return html
-  return DOMPurify.sanitize(html)
+  // 使用统一的消毒函数，SSR 和客户端都安全
+  return sanitizeHtml(marked(post.value.content))
 })
 
 const breadcrumbs = computed(() => {
