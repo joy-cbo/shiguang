@@ -64,7 +64,7 @@ const modules = import.meta.glob<{ default: PluginJson }>('./*/plugin.json', { e
 
 for (const [path, module] of Object.entries(modules)) {
   const meta = module.default
-  const dir = path.split('/')[2]   // /plugins/{dir}/plugin.json
+  const dir = path.split('/')[1]   // ./{dir}/plugin.json
   if (!meta.name || !dir) continue
 
   regPlugin({
