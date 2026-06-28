@@ -43,10 +43,10 @@
               <input v-model="editTitle" class="border rounded px-2 py-1 text-sm flex-1 dark:bg-gray-700 dark:border-gray-600" />
               <input v-model="editSlug" class="border rounded px-2 py-1 text-sm w-32 dark:bg-gray-700 dark:border-gray-600" />
               <button @click="saveEdit(p.id)" class="text-green-500 hover:text-green-700" title="保存">
-                <IconShiguang name="check" size="16" />
+                <UiIconShiguang name="check" size="16" />
               </button>
               <button @click="cancelEdit" class="text-gray-400 hover:text-gray-600" title="取消">
-                <IconShiguang name="x" size="16" />
+                <UiIconShiguang name="x" size="16" />
               </button>
             </div>
             <textarea v-model="editContent" rows="8"
@@ -67,13 +67,13 @@
             <div class="flex gap-2">
               <NuxtLink :to="'/page/' + p.slug" target="_blank"
                 class="text-gray-400 hover:text-purple-500 text-xs" title="预览">
-                <IconShiguang name="external-link" size="14" />
+                <UiIconShiguang name="external-link" size="14" />
               </NuxtLink>
               <button @click="startEdit(p)" class="text-gray-400 hover:text-purple-500 text-xs" title="编辑">
-                <IconShiguang name="edit" size="14" />
+                <UiIconShiguang name="edit" size="14" />
               </button>
               <button @click="remove(p.id)" class="text-red-400 hover:text-red-600 text-xs" title="删除">
-                <IconShiguang name="trash" size="14" />
+                <UiIconShiguang name="trash" size="14" />
               </button>
             </div>
           </div>
