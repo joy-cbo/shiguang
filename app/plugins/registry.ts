@@ -60,7 +60,7 @@ export function togglePlugin(name: string, enabled: boolean): boolean {
 
 // ======== 自动发现：扫描 plugins/*/plugin.json ========
 
-const modules = import.meta.glob<{ default: PluginJson }>('/plugins/*/plugin.json', { eager: true })
+const modules = import.meta.glob<{ default: PluginJson }>('./*/plugin.json', { eager: true })
 
 for (const [path, module] of Object.entries(modules)) {
   const meta = module.default
