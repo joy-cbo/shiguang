@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { marked } from 'marked'
-import DOMPurify from 'dompurify'
+import { sanitizeHtml } from '~/composables/useSanitize'
 
 const route = useRoute()
 const page = ref<any>(null)
@@ -19,9 +19,8 @@ const loading = ref(true)
 
 const renderedContent = computed(() => {
   if (!page.value?.content) return ''
-  // SSR 时跳过 DOMPurify（需要浏览器 DOM），客户端 hydration 后会重新 purify
-  if (typeof window === 'undefined') return marked(page.value.content)
-  return DOMPurify.sanitize(marked(page.value.content))
+  // 使用统一的消毒函数，SSR 和客户端都安全
+  return sanitizeHtml(marked(page.value.content))
 })
 
 onMounted(async () => {

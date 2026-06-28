@@ -89,3 +89,11 @@ CREATE TABLE IF NOT EXISTS site_config (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL DEFAULT ''
 );
+
+-- 全文搜索虚拟表（FTS5）
+CREATE VIRTUAL TABLE IF NOT EXISTS posts_fts USING fts5(
+  title,
+  content,
+  excerpt,
+  content_rowid=id
+);

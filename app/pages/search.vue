@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import DOMPurify from 'dompurify'
+import { sanitizeHtml } from '~/composables/useSanitize'
 
 const route = useRoute()
 const { formatDate } = useFormat()
@@ -32,14 +32,13 @@ const results = ref<any[]>([])
 const total = ref(0)
 const loading = ref(true)
 
-// 关键词高亮 + DOMPurify 消毒（防御性安全）
+// 关键词高亮 + 消毒（防御性安全）
 function highlight(text: string): string {
   if (!q.value || !text) return text
   const escaped = q.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const result = text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark class="bg-yellow-200 dark:bg-yellow-800 px-0.5 rounded">$1</mark>')
-  // DOMPurify 需要浏览器 DOM，SSR 时跳过（客户端 hydration 后会重新 purify）
-  if (typeof window === 'undefined') return result
-  return DOMPurify.sanitize(result)
+  // 使用统一的消毒函数，SSR 和客户端都安全
+  return sanitizeHtml(result)
 }
 
 watchEffect(async () => {
