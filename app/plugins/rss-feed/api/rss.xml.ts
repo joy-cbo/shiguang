@@ -1,7 +1,6 @@
 // GET /api/rss.xml — RSS 2.0 订阅
 // 此文件属于 plugins/rss-feed 插件
 import { isPluginEnabled } from '~~/engine/utils/plugin-registry'
-import { getDB } from '~~/engine/utils/db'
 
 export default defineEventHandler(async (event) => {
   if (!isPluginEnabled('rss-feed')) {
