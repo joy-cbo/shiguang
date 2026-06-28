@@ -12,6 +12,7 @@ const TABLES = [
   `CREATE TABLE IF NOT EXISTS links (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, url TEXT NOT NULL, logo TEXT NOT NULL DEFAULT '', description TEXT NOT NULL DEFAULT '', sort_order INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL DEFAULT (datetime('now')))`,
   `CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, post_id INTEGER NOT NULL REFERENCES posts(id), parent_id INTEGER REFERENCES comments(id), author_name TEXT NOT NULL, author_email TEXT NOT NULL DEFAULT '', author_website TEXT NOT NULL DEFAULT '', content TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'approved' CHECK(status IN ('pending','approved','spam')), ip TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT (datetime('now')))`,
   `CREATE TABLE IF NOT EXISTS site_config (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '')`,
+  `CREATE VIRTUAL TABLE IF NOT EXISTS posts_fts USING fts5(title, content, excerpt, content_rowid=id)`,
 ]
 
 export default defineEventHandler(async (event) => {
@@ -23,6 +24,14 @@ export default defineEventHandler(async (event) => {
   // 逐条建表（避免 exec() 多语句兼容问题）
   for (const sql of TABLES) {
     await db.prepare(sql).run()
+  }
+
+  // 填充 FTS5 索引（如果表为空）
+  try {
+    await db.prepare("INSERT INTO posts_fts(posts_fts) VALUES('rebuild')").run()
+  } catch (e) {
+    // FTS5 表可能不存在，忽略错误
+    console.warn('[setup] FTS5 rebuild failed:', e)
   }
 
   const count = await db.prepare('SELECT COUNT(*) as cnt FROM users').first() as { cnt: number } | null
