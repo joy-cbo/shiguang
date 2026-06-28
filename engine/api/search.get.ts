@@ -37,10 +37,46 @@ export default defineEventHandler(async (event) => {
       created_at: p.created_at,
       snippet: p.highlighted_content || p.excerpt || '',
     }))
+    
+    // 如果 FTS5 返回空，尝试重建索引后重试
+    if (results.length === 0) {
+      try {
+        await db.prepare("INSERT INTO posts_fts(posts_fts) VALUES('rebuild')").run()
+        // 重试搜索
+        const retryResult = await db.prepare(`
+          SELECT p.id, p.title, p.slug, p.excerpt, p.content, p.cover, p.created_at,
+                 u.nickname AS author_nickname,
+                 highlight(posts_fts, 0, '<mark>', '</mark>') AS highlighted_title,
+                 snippet(posts_fts, 1, '<mark>', '</mark>', '...', 64) AS highlighted_content
+          FROM posts_fts
+          JOIN posts p ON posts_fts.rowid = p.id
+          LEFT JOIN users u ON p.author_id = u.id
+          WHERE posts_fts MATCH ? AND p.status = 'published' AND p.deleted_at IS NULL
+          ORDER BY rank
+          LIMIT 20
+        `).bind(ftsQuery).all()
+        
+        results = rows(retryResult).map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          cover: p.cover,
+          author_nickname: p.author_nickname,
+          created_at: p.created_at,
+          snippet: p.highlighted_content || p.excerpt || '',
+        }))
+      } catch (rebuildError) {
+        // 重建失败，降级到 LIKE 搜索
+        console.warn('[search] FTS5 rebuild failed, falling back to LIKE:', rebuildError)
+      }
+    }
   } catch (ftsError) {
     // FTS5 不可用时，降级到 LIKE 搜索
     console.warn('[search] FTS5 not available, falling back to LIKE:', ftsError)
-    
+  }
+  
+  // 如果 FTS5 没有结果，使用 LIKE 搜索
+  if (results.length === 0) {
     const keyword = `%${q}%`
     const likeResult = await db.prepare(`
       SELECT p.id, p.title, p.slug, p.excerpt, p.content, p.cover, p.created_at,
