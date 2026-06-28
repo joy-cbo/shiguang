@@ -286,7 +286,7 @@ npx wrangler pages deploy dist
 2. 连接 GitHub
 3. 配置构建：
    - Build command: `npm run build`
-   - Output directory: `.output`
+   - Output directory: `dist`
 4. 绑定 D1 数据库（变量名 `shiguang-db`）
 5. 绑定 R2 存储（变量名 `shiguang-files`）
 6. 绑定 KV 命名空间（变量名 `CACHE`，可选）
