@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-100 dark:bg-gray-950">
-    <Toast />
+    <UiToast />
     <!-- 桌面端侧边栏 -->
     <aside class="hidden lg:flex w-56 bg-white dark:bg-gray-900 border-r dark:border-gray-800 min-h-screen p-4 flex-col fixed left-0 top-0 bottom-0 z-40">
       <NuxtLink to="/admin" class="text-lg font-bold mb-6 block">Blog 管理</NuxtLink>
@@ -8,7 +8,7 @@
           <NuxtLink v-for="item in menu" :key="item.path" :to="item.path"
             class="block px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 relative flex items-center gap-2"
             :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600': route.path === item.path }">
-            <IconShiguang :name="item.icon" size="16" class="shrink-0" />
+            <UiIconShiguang :name="item.icon" size="16" class="shrink-0" />
             {{ item.label }}
             <span v-if="item.path === '/admin/comments' && unreadCount" class="absolute top-1.5 right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
           </NuxtLink>
@@ -38,7 +38,7 @@
             class="block px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2"
             :class="{ 'bg-blue-50 dark:bg-blue-900/20 text-blue-600': route.path === item.path }"
             @click="sidebarOpen = false">
-            <IconShiguang :name="item.icon" size="16" class="shrink-0" />
+            <UiIconShiguang :name="item.icon" size="16" class="shrink-0" />
             {{ item.label }}
           </NuxtLink>
         </nav>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-6"><IconShiguang name="link" class="inline align-[-3px] mr-1" />友情链接</h1>
+    <h1 class="text-2xl font-bold mb-6"><UiIconShiguang name="link" class="inline align-[-3px] mr-1" />友情链接</h1>
     <p class="text-gray-500 mb-8 text-sm">一些有趣的朋友和站点</p>
 
     <div v-if="loading" class="text-center py-10 text-gray-400">加载中...</div>

@@ -9,5 +9,5 @@ activeTheme.value = 'saas'
 <template>
   <SaasTheme v-if="activeTheme === 'saas'"><slot /></SaasTheme>
   <DefaultTheme v-else><slot /></DefaultTheme>
-  <Toast />
+  <UiToast />
 </template>
