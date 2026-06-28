@@ -68,10 +68,10 @@
 | 项目名称 | `shiguang` |
 | 生产分支 | `master` |
 | 构建命令 | `npm install --prefer-offline --no-audit && npm run build` |
-| 输出目录 | `.output` |
+| 输出目录 | `dist` |
 
 > ⚠️ 构建命令开头要加 `npm install`。不要只用 `npm run build`，否则会报错。
-> ⚠️ 输出目录是 `.output`，不是 `dist`。
+> ⚠️ 输出目录是 `dist`，不是 `.output`。
 
 **环境变量（必填！）** 点「添加变量」：
 
