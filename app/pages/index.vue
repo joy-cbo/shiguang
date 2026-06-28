@@ -88,8 +88,6 @@
 </template>
 
 <script setup lang="ts">
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
 
 const { formatDate, stripHtml, readingTime } = useFormat()
 const { tags: tagCloud } = useTagCloud()
