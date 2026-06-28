@@ -19,7 +19,7 @@
             <td class="py-2">
               <NuxtLink :to="`/admin/posts/edit-${p.id}`" class="text-purple-600 hover:underline">{{ p.title }}</NuxtLink>
             </td>
-            <td><IconShiguang v-if="p.status === 'published'" name="check" size="16" class="text-green-500 inline"/><IconShiguang v-else name="edit" size="16" class="text-yellow-500 inline"/></td>
+            <td><UiIconShiguang v-if="p.status === 'published'" name="check" size="16" class="text-green-500 inline"/><UiIconShiguang v-else name="edit" size="16" class="text-yellow-500 inline"/></td>
             <td class="text-gray-400">{{ formatDate(p.created_at) }}</td>
           </tr>
         </tbody>

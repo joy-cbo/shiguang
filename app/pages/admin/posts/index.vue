@@ -11,8 +11,8 @@
     <!-- 批量操作栏 -->
     <div v-if="checked.length" class="flex gap-2 mb-3 items-center text-sm">
       <span class="text-gray-500">已选 {{ checked.length }} 篇</span>
-      <button @click="batchAction('publish')" class="px-2 py-1 border rounded hover:bg-green-50 dark:border-gray-600 text-xs"><IconShiguang name="check" size="14" class="inline align-[-2px] mr-0.5 text-green-500"/>批量发布</button>
-      <button @click="batchAction('draft')" class="px-2 py-1 border rounded hover:bg-yellow-50 dark:border-gray-600 text-xs"><IconShiguang name="edit" size="14" class="inline align-[-2px] mr-0.5 text-yellow-500"/>转草稿</button>
+      <button @click="batchAction('publish')" class="px-2 py-1 border rounded hover:bg-green-50 dark:border-gray-600 text-xs"><UiIconShiguang name="check" size="14" class="inline align-[-2px] mr-0.5 text-green-500"/>批量发布</button>
+      <button @click="batchAction('draft')" class="px-2 py-1 border rounded hover:bg-yellow-50 dark:border-gray-600 text-xs"><UiIconShiguang name="edit" size="14" class="inline align-[-2px] mr-0.5 text-yellow-500"/>转草稿</button>
       <button @click="batchAction('delete')" class="px-2 py-1 border rounded hover:bg-red-50 dark:border-gray-600 text-xs">🗑 批量删除</button>
       <select v-model="batchCategory" class="border rounded px-2 py-1 text-xs dark:bg-gray-800 dark:border-gray-600">
         <option value="">移动分类…</option>
@@ -31,11 +31,11 @@
           <tr v-for="p in posts" :key="p.id" class="border-b dark:border-gray-700">
             <td class="py-2 px-3"><input type="checkbox" :value="p.id" v-model="checked" /></td>
             <td class="py-2 px-3 max-w-xs truncate">
-              <span v-if="p.is_pinned" class="text-orange-500 mr-1 inline-flex align-[-3px]" title="置顶"><IconShiguang name="pin" size="14"/></span>{{ p.title }}
+              <span v-if="p.is_pinned" class="text-orange-500 mr-1 inline-flex align-[-3px]" title="置顶"><UiIconShiguang name="pin" size="14"/></span>{{ p.title }}
             </td>
             <td class="text-gray-500">{{ p.category_name || '-' }}</td>
             <td class="text-gray-500">-</td>
-            <td><IconShiguang v-if="p.status === 'published'" name="check" size="16" class="text-green-500 inline"/><IconShiguang v-else name="edit" size="16" class="text-yellow-500 inline"/></td>
+            <td><UiIconShiguang v-if="p.status === 'published'" name="check" size="16" class="text-green-500 inline"/><UiIconShiguang v-else name="edit" size="16" class="text-yellow-500 inline"/></td>
             <td class="text-gray-400">{{ formatDate(p.created_at) }}</td>
             <td class="space-x-1">
               <NuxtLink :to="`/admin/posts/edit-${p.id}`" class="text-blue-500 text-xs">编辑</NuxtLink>

@@ -17,8 +17,15 @@ export default defineNuxtConfig({
   },
 
   imports: {
-    dirs: ['lib'],
+    dirs: ['composables'],
   },
+
+  // 组件自动导入（支持子目录）
+  components: [
+    { path: '~/components/ui', prefix: 'ui' },
+    { path: '~/components/blog', prefix: '' },  // 博客组件不加前缀，保持兼容
+    { path: '~/components', prefix: '' },
+  ],
 
   nitro: {
     preset: 'cloudflare-pages',

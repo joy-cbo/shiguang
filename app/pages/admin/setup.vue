@@ -15,7 +15,7 @@
           <div class="relative">
             <input :type="showPwd ? 'text' : 'password'" v-model="password" placeholder="至少8位" class="w-full border rounded px-3 py-2 pr-10 dark:bg-gray-700 dark:border-gray-600" required @input="checkStrength" />
             <button type="button" @click="showPwd = !showPwd" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm">
-              <IconShiguang :name="showPwd ? 'eye-off' : 'eye'" size="18" />
+              <UiIconShiguang :name="showPwd ? 'eye-off' : 'eye'" size="18" />
             </button>
           </div>
           <!-- 密码强度 -->
@@ -33,7 +33,7 @@
           <div class="relative">
             <input :type="showConfirm ? 'text' : 'password'" v-model="confirmPwd" placeholder="再输一遍" class="w-full border rounded px-3 py-2 pr-10 dark:bg-gray-700 dark:border-gray-600" :class="confirmMismatch ? 'border-red-400' : ''" required />
             <button type="button" @click="showConfirm = !showConfirm" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm">
-              <IconShiguang :name="showConfirm ? 'eye-off' : 'eye'" size="18" />
+              <UiIconShiguang :name="showConfirm ? 'eye-off' : 'eye'" size="18" />
             </button>
           </div>
           <p v-if="confirmMismatch" class="text-red-500 text-xs mt-1">两次密码不一致</p>

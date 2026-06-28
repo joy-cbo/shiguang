@@ -11,7 +11,7 @@
       >
         <!-- 预览图占位 -->
         <div class="h-40 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
-          <IconShiguang :name="theme.icon || 'home'" size="36" class="text-purple-500" />
+          <UiIconShiguang :name="theme.icon || 'home'" size="36" class="text-purple-500" />
         </div>
         
         <div class="p-4">
